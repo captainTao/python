@@ -1,9 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+''' 
+有时候我们定位不到元素还有其它的原因，下面说明几种：  
+1.Frame/Iframe原因定位不到元素： 
+2.Xpath描述错误原因：
+解决办法：编写好Xpath路径，chrome的F12-&gt;html，ctrl+F进行查找，看是否能查找到。
+3.页面还没有加载出来，就对页面上的元素进行的操作： 解决办法：导入time模块设置等待时间。 
+4.动态id定位不到元素
+解决办法：如果是动态的id，最好不要使用，转而使用xpath或其它方式定位 
+5.二次定位，如弹出框登录 解决办法：先定位到弹出框，再定位到弹出框内的元素。
+6.不可见元素定位 [emoji:00a0] [emoji:00a0] [emoji:00a0]如上百度登录代码，通过名称为tj_login查找的登录元素，
+有些是不可见的，所以加一个循环判断，找到可见元素（is_displayed()）点击登录即可。 
+
 '''
+
+
 selenium定位方法
 http://www.testclass.net/selenium_python/find-element/
+
+组元素就是在element变成elements就ok了；
 
 Selenium提供了8种定位方式。
     1. id
@@ -90,14 +106,14 @@ dr.find_element_by_partial_link_text("hao")
 dr.find_element_by_partial_link_text("123")
 
 
-'''
+
 
 
 
 //////////////////////////////////////////////////////////////
 
 
-
+#常用方法：
 import unittest
 from selenium import webdriver
 driver = webdriver.Chrome()
@@ -318,4 +334,53 @@ finally:
     print(ctime())
     driver.quit()
 
+
+
+# 组元素就是在element变成elements就ok了；
+
+
+from selenium import webdriver
+from time import sleep
+
+driver = webdriver.Chrome()
+driver.get("https://www.baidu.com")
+
+driver.find_element_by_id("kw").send_keys("selenium")
+driver.find_element_by_id("su").click()
+sleep(1)
+
+# 定位一组元素
+texts = driver.find_elements_by_xpath('//div/h3/a')
+
+# 循环遍历出每一条搜索结果的标题
+for t in texts:
+    print(t.text)
+
+driver.quit()
+
+
+
+
+#多表单切换
+from selenium import webdriver
+from time import sleep
+
+driver = webdriver.Chrome()
+driver.get("http://www.126.com")
+sleep(3)
+
+# switch_to.frame() 默认可以直接取表单的id 或name属性。
+# 如果iframe没有可用的id和name属性，则可以通过下面的方式进行定位。
+driver.switch_to.frame('x-URS-iframe')
+driver.find_element_by_name("email").clear()
+driver.find_element_by_name("email").send_keys("username")
+driver.find_element_by_name("password").clear()
+driver.find_element_by_name("password").send_keys("password")
+driver.find_element_by_id("dologin").click()
+
+# 可以通过switch_to.default_content()跳回最外层的页面
+driver.switch_to.default_content()
+sleep(3)
+
+driver.quit()
 
