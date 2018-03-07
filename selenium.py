@@ -360,8 +360,13 @@ driver.quit()
 
 
 
+'''
+多表单切换：
+在Web应用中经常会遇到frame/iframe表单嵌套页面的应用，
+WebDriver只能在一个页面上对元素识别与定位，对于frame/iframe表单内嵌页面上的元素无法直接定位。
+这时就需要通过switch_to.frame()方法将当前定位的主体切换为frame/iframe表单的内嵌页面中
 
-#多表单切换
+'''
 from selenium import webdriver
 from time import sleep
 
@@ -384,3 +389,124 @@ sleep(3)
 
 driver.quit()
 
+
+
+
+
+'''
+新窗口切换：
+WebDriver提供了switch_to.window()方法，可以实现在不同的窗口之间切换。
+
+在本例中所涉及的新方法如下：
+current_window_handle：获得当前窗口句柄。
+window_handles：返回所有窗口的句柄到当前会话。
+switch_to.window()：用于切换到相应的窗口，与上一节的switch_to.frame()类似，前者用于不同窗口的切换，后者用于不同表单之间的切换。
+'''
+
+
+from selenium import webdriver
+import time
+
+driver = webdriver.Chrome()
+driver.implicitly_wait(10)
+driver.get("http://www.baidu.com")
+
+# 获得百度搜索窗口句柄
+sreach_windows = driver.current_window_handle
+
+driver.find_element_by_link_text('登录').click()
+driver.find_element_by_link_text("立即注册").click()
+
+# 获得当前所有打开的窗口的句柄
+all_handles = driver.window_handles
+
+# 进入注册窗口
+for handle in all_handles:
+    if handle != sreach_windows:
+        driver.switch_to.window(handle)
+        print('now register window!')
+        driver.find_element_by_name("userName").send_keys('okusername111')
+        driver.find_element_by_name("phone").send_keys('13456786540')
+        # driver.find_element_by_name('password').send_keys('kusernameK@111')
+        # driver.find_element_by_name('verifyCode').send_keys('3432')
+        driver.find_element('注册').click()
+        time.sleep(2)
+        # ……
+
+driver.quit()
+
+
+
+
+'''
+警告框处理：
+
+在WebDriver中处理JavaScript所生成的alert、confirm以及prompt十分简单，
+具体做法是使用 switch_to.alert() 方法定位到 alert/confirm/prompt，然后使用text/accept/dismiss/ send_keys等方法进行操作。
+
+text：返回 alert/confirm/prompt 中的文字信息。
+
+accept()：接受现有警告框。
+
+dismiss()：解散现有警告框。
+
+send_keys(keysToSend)：发送文本至警告框。keysToSend：将文本发送至警告框。
+
+'''
+
+
+from selenium import webdriver
+from selenium.webdriver.common.action_chains import ActionChains
+import time
+
+driver = webdriver.Chrome()
+driver.implicitly_wait(10)
+driver.get('http://www.baidu.com')
+
+# 鼠标悬停至“设置”链接
+link = driver.find_element_by_link_text('设置')
+ActionChains(driver).move_to_element(link).perform()
+
+# 打开搜索设置
+driver.find_element_by_link_text("搜索设置").click()
+time.sleep(2)  #前面有隐式等待，为什么需要这需要加延时？
+
+# 保存设置
+driver.find_element_by_class_name("prefpanelgo").click()
+time.sleep(2)
+
+# 接受警告框
+driver.switch_to.alert.accept()
+
+driver.quit()
+
+
+
+
+'''
+下拉框选择：
+Select类用于定位select标签。 select_by_value() 方法用于定位下接选项中的value值。
+
+'''
+
+from selenium import webdriver
+from selenium.webdriver.support.select import Select
+from time import sleep
+
+driver = webdriver.Chrome()
+driver.implicitly_wait(10)
+driver.get('http://www.baidu.com')
+
+# 鼠标悬停至“设置”链接
+driver.find_element_by_link_text('设置').click()
+sleep(1)
+# 打开搜索设置
+driver.find_element_by_link_text("搜索设置").click()
+sleep(2)
+
+# 搜索结果显示条数
+sel = driver.find_element_by_xpath("//select[@id='nr']")
+Select(sel).select_by_value('50')  # 显示50条
+# ……
+
+driver.quit()
