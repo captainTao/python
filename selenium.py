@@ -109,9 +109,9 @@ dr.find_element_by_partial_link_text("123")
 
 
 
-
+'''
 //////////////////////////////////////////////////////////////
-
+'''
 
 #常用方法：
 import unittest
@@ -362,6 +362,7 @@ driver.quit()
 
 '''
 多表单切换：
+frame/iframe
 在Web应用中经常会遇到frame/iframe表单嵌套页面的应用，
 WebDriver只能在一个页面上对元素识别与定位，对于frame/iframe表单内嵌页面上的元素无法直接定位。
 这时就需要通过switch_to.frame()方法将当前定位的主体切换为frame/iframe表单的内嵌页面中
@@ -512,3 +513,140 @@ sleep(2)
 # ……
 
 driver.quit()
+
+
+
+
+
+
+'''
+文件上传：
+
+对于通过input标签实现的上传功能，可以将其看作是一个输入框，即通过send_keys()指定本地文件路径的方式实现文件上传。
+
+创建upfile.html文件，代码如下：
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="content-type" content="text/html;charset=utf-8" />
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" />
+    <title>test upload_file</title>
+</head>
+<body>
+  <div class="row-fluid">
+    <div class="span6 well">
+    <h3>upload_file</h3>
+
+      <input type="file" name="file" />
+      <input type="text" name="text" id="mycolor" value="选择文件..."  style="color: gray; font-size: 10px; font-style: italic; width: 300px;" />
+    </div>
+  </div>
+</body>
+<script src="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.js"></script>
+</html>
+
+
+接下来通过send_keys()方法来实现文件上传。
+'''
+
+
+
+from selenium import webdriver
+# import os
+from time import sleep
+driver = webdriver.Chrome()
+# file_path = 'file:///' + os.path.abspath('upfile.html')
+driver.get("file:///Users/captain/Desktop/test.html")
+
+# 定位上传按钮，添加本地文件
+# driver.find_element_by_name("file").click()  #如果选择文件的弹窗，怎么切换到弹窗呢？？alert方法查找不到元素
+driver.find_element_by_name("file").send_keys('/Users/captain/desktop/100.txt') 
+#上传文件只能用send_keys()，如果用click(),会设计到操作系统层面，找不到元素
+# driver.find_element_by_name("file").send_keys('/Users/captain/desktop/00')
+sleep(3)
+driver.quit()
+
+
+
+
+
+'''
+cookie操作:
+
+有时候我们需要验证浏览器中cookie是否正确，因为基于真实cookie的测试是无法通过白盒和集成测试进行的。WebDriver提供了操作Cookie的相关方法，可以读取、添加和删除cookie信息。
+
+WebDriver操作cookie的方法：
+
+get_cookies()： 获得所有cookie信息。
+
+get_cookie(name)： 返回字典的key为“name”的cookie信息。
+
+add_cookie(cookie_dict) ： 添加cookie。“cookie_dict”指字典对象，必须有name 和value 值。
+
+delete_cookie(name,optionsString)：删除cookie信息。“name”是要删除的cookie的名称，“optionsString”是该cookie的选项，目前支持的选项包括“路径”，“域”。
+
+delete_all_cookies()： 删除所有cookie信息。
+
+下面通过get_cookies()来获取当前浏览器的cookie信息。
+'''
+
+
+# 下面通过get_cookies()来获取当前浏览器的cookie信息。
+
+from selenium import webdriver
+from time import sleep
+driver = webdriver.Firefox()
+driver.get("http://www.youdao.com")
+
+# 获得cookie信息
+cookie= driver.get_cookies()
+# 将获得cookie的信息打印
+print(cookie)
+sleep(3)
+
+driver.quit()
+
+
+'''
+从执行结果可以看出，cookie数据是以字典的形式进行存放的。知道了cookie的存放形式，接下来我们就可以按照这种形式向浏览器中写入cookie信息。
+'''
+
+from selenium import webdriver
+
+driver = webdriver.Firefox()
+driver.get("http://www.youdao.com")
+
+# 向cookie的name 和value中添加会话信息
+driver.add_cookie({'name': 'key-aaaaaaa', 'value': 'value-bbbbbb'})
+
+# 遍历cookies中的name 和value信息并打印，当然还有上面添加的信息
+for cookie in driver.get_cookies():
+    print("%s -> %s" % (cookie['name'], cookie['value']))
+
+driver.quit()
+
+'''
+输出结果：
+======================== RESTART: =========================
+YOUDAO_MOBILE_ACCESS_TYPE -> 1
+_PREF_ANONYUSER__MYTH -> aGFzbG9nZ2VkPXRydWU=
+OUTFOX_SEARCH_USER_ID -> -1046383847@218.17.158.115
+JSESSIONID -> abc7qSE_SBGsVgnVLBvcu
+key-aaaaaaa -> value-bbbbbb
+从执行结果可以看到，最后一条cookie信息是在脚本执行过程中通过add_cookie()方法添加的。
+通过遍历得到所有的cookie信息，从而找到key为“name”和“value”的特定cookie的value。
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+
