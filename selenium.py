@@ -133,7 +133,7 @@ print(text)
 result = driver.find_element_by_css_selector("#kw").is_displayed()
 print(result)
 
-driver.find_element_by_id("kw").send_keys("输入内容") #模拟按键输入内容
+driver.find_element_by_id("kw").send_keys(u"输入内容") #模拟按键输入内容
 driver.find_element_by_id("kw").submit()
 driver.find_element_by_id("su").click()
 
