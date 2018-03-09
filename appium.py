@@ -25,6 +25,7 @@ adb shell pm list packages
 
 3.获取APP包名
 adb logcat | grep START
+
 然后启动对应的应用：
 cmp=包名/线程名
 cmp=photo.studio.editor.selfie.camera/us.pinguo.icecream.homepage.HomePageActivity
