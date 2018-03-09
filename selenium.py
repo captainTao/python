@@ -574,7 +574,8 @@ driver.quit()
 '''
 cookie操作:
 
-有时候我们需要验证浏览器中cookie是否正确，因为基于真实cookie的测试是无法通过白盒和集成测试进行的。WebDriver提供了操作Cookie的相关方法，可以读取、添加和删除cookie信息。
+有时候我们需要验证浏览器中cookie是否正确，因为基于真实cookie的测试是无法通过白盒和集成测试进行的。
+WebDriver提供了操作Cookie的相关方法，可以读取、添加和删除cookie信息。
 
 WebDriver操作cookie的方法：
 
