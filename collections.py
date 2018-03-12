@@ -110,5 +110,27 @@ deque([3, 4, 5, 6, 7], maxlen=5)  # 只记录了最近5条
 
 
 
+'''
+python实现冒泡排序:
+---很恶心哈，python没有for(int i = 0;i<len(list);i++){}之类的代码，
+sort不用，多次一举....
+'''
+
+# import random
+def bubblesort(target):
+    length = len(target)
+    while length > 0:
+        length -= 1
+        cur = 0
+        while cur < length: #拿到当前元素
+            if target[cur] > target[cur + 1]:
+                target[cur], target[cur + 1] = target[cur + 1], target[cur]
+            cur += 1
+    return target
+if __name__ == '__main__':
+    a = [random.randint(1,100) for i in range(10)]
+    print bubblesort(a)
+
+
 
 
