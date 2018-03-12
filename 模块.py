@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 包（__int__.py文件和模块文件）
 
 模块的常见写法（这儿以hello.py为例）
