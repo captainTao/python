@@ -133,4 +133,25 @@ if __name__ == '__main__':
 
 
 
+'''
+collections实现dict排序
+refer to :
+https://stackoverflow.com/questions/9001509/how-can-i-sort-a-dictionary-by-key
+'''
 
+>>> d = {2:3, 1:89, 4:5, 3:0}
+>>> od = collections.OrderedDict(sorted(d.items()))
+>>> od
+OrderedDict([(1, 89), (2, 3), (3, 0), (4, 5)])
+>>> od[1]
+89
+>>> od[3]
+0
+>>> for k, v in od.iteritems():
+...     print k, v
+... 
+1 89
+2 3
+3 0
+4 5
+>>> 
