@@ -1,6 +1,138 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+使用type():
+
+
+>>> type(123)
+<type 'int'>
+>>> type('str')
+<type 'str'>
+>>> type(None)
+<type 'NoneType'>
+
+
+
+如果我们要在if语句中判断，就需要比较两个变量的type类型是否相同：
+
+>>> type(123)==type(456)
+True
+>>> type('abc')==type('123')
+True
+>>> type('abc')==type(123)
+False
+
+
+但是这种写法太麻烦，Python把每种type类型都定义好了常量，放在types模块里，使用之前，需要先导入：
+
+>>> import types
+>>> type('abc')==types.StringType
+True
+>>> type(u'abc')==types.UnicodeType
+True
+>>> type([])==types.ListType
+True
+>>> type(str)==types.TypeType
+True
+
+
+
+最后注意到有一种类型就叫TypeType，所有类型本身的类型就是TypeType，比如：
+>>> type(int)
+<type 'type'>
+>>> type(int)==type(str)==types.TypeType
+
+
+
+
+使用isinstance():
+
+object -> Animal -> Dog -> Husky
+
+>>> a = Animal()
+>>> d = Dog()
+>>> h = Husky()
+
+>>> isinstance(h, Husky)
+True
+
+>>> isinstance(h, Dog)
+True
+
+>>> isinstance(d, Husky)
+False
+
+
+能用type()判断的基本类型也可以用isinstance()判断：
+
+>>> isinstance('a', str)
+True
+>>> isinstance(u'a', unicode)
+True
+>>> isinstance('a', unicode)
+False
+
+
+
+并且还可以判断一个变量是否是某些类型中的一种，比如下面的代码就可以判断是否是str或者unicode：
+
+>>> isinstance('a', (str, unicode))
+True
+>>> isinstance(u'a', (str, unicode))
+True
+对于class的继承关系来说，使用type()就很不方便。我们要判断class的类型，可以使用isinstance()函数
+True
+
+
+
+由于str和unicode都是从basestring继承下来的，所以，还可以把上面的代码简化为：
+
+>>> isinstance(u'a', basestring)
+True
+
+
+
+配合getattr()、setattr()以及hasattr()，我们可以直接操作一个对象的状态：
+
+>>> class MyObject(object):
+...     def __init__(self):
+...         self.x = 9
+...     def power(self):
+...         return self.x * self.x
+...
+>>> obj = MyObject()
+
+#属性
+>>> hasattr(obj, 'x') # 有属性'x'吗？
+True
+>>> obj.x
+9
+>>> hasattr(obj, 'y') # 有属性'y'吗？
+False
+>>> setattr(obj, 'y', 19) # 设置一个属性'y'
+>>> hasattr(obj, 'y') # 有属性'y'吗？
+True
+>>> getattr(obj, 'y') # 获取属性'y'
+19
+>>> obj.y # 获取属性'y'
+19
+
+>>> getattr(obj, 'z', 404) # 获取属性'z'，如果不存在，返回默认值404
+404
+
+#方法  也可以获得对象的方法：
+>>> hasattr(obj, 'power') # 有属性'power'吗？
+True
+>>> getattr(obj, 'power') # 获取属性'power'
+<bound method MyObject.power of <__main__.MyObject object at 0x108ca35d0>>
+>>> fn = getattr(obj, 'power') # 获取属性'power'并赋值到变量fn
+>>> fn # fn指向obj.power
+<bound method MyObject.power of <__main__.MyObject object at 0x108ca35d0>>
+>>> fn() # 调用fn()与调用obj.power()是一样的
+81
+
+/////////////////////////////////////////////////
+
 包（__int__.py文件和模块文件）
 
 模块的常见写法（这儿以hello.py为例）
