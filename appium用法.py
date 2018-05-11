@@ -126,6 +126,29 @@ https://github.com/appium/appium/blob/master/docs/en/writing-running-appium/caps
 
 
 
+#!usr/bin/env python
+
+import os
+
+def get_desired_capability():
+    desired_caps = {
+        'platformVersion': '9.3',
+        'platformName': 'iOS',
+        'deviceName': 'iphone', # instruments -s devices获取
+        'automationName': 'XCUITest',
+        # 'bundleId': 'com.pg.test.AutoTest',
+        # 'bundleId': 'com.pg.demo',
+        'bundleId': 'com.pinguo.camera360',
+        'udid': '91a0298eab5da902d39a2bf2f7a859f03c0c38f0'
+        # 'udid': '91734038d675ddd6b24345f29a50d9acb5640966'
+    }
+
+    return desired_caps
+
+def get_uri():
+    return 'http://0.0.0.0:4723/wd/hub'
+
+
 
 
 '''
