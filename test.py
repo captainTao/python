@@ -1885,7 +1885,159 @@
 
 
 
+# import os
+# path = input("input zipfile path:").strip()
+# if os.path.exists(path) and os.path.isfile(path):
+#     print(path)
+# elif os.path.exists(path) and os.path.isdir(path):
+#     for i in os.listdir(path):
+#         print(type(i))
+#         fullpath = os.path.join(path, i)
+#         print(fullpath)
+# else:
+#     print('err: not exist this path')
 
+
+
+'''
+import os
+import platform
+# print(platform.system()) #mac:'Darwin', windows:
+# print(platform.python_version())
+path = input(r"请拖入文件或者文件夹: ").strip()
+#处理mac下拖动有空格名字文件夹，出现的转义字符
+if r'\ ' in path:
+    path = path.replace(r'\ ',' ')
+#windows下拖动文件夹
+if r'"' in path:
+    path = path.replace(r'"', '')
+#替换windows下\为/,一般还是不需要这个，会引起一系列的问题，比如os.path.join
+if '\\' in path:
+    path = path.replace('\\', '/')
+'''
+# os.chdir(path)
+
+# print('后缀名:',os.path.splitext(path)[-1])
+# print('文件全名:',os.path.basename(path))
+# print('规范目录:',os.path.normpath(path))
+# print('path是否存在：',os.path.exists(path))
+# print('path是目录：',os.path.isdir(path))
+# print('目录2:',path)
+# path = os.path.normpath(path)
+# print ('normalpath:', os.path.normpath(path))
+# print('是文件',os.path.isfile(path))
+# for i in os.listdir(path):
+#     print(i)
+    # fullpath = os.path.join(path, i)
+    # print(fullpath)
+
+
+
+# python正则没有可以测试一个字符串是否满足，然后返回False or True的函数,不像js函数，所以放弃了
+# import re
+# content='Where are you from? You look so hansome.'
+# regex=re.compile(r'\w*som\w*')
+# m=regex.search(content)
+# if m:
+#     print (m.group(0))
+# else:
+#     print ("Not found")
+
+
+#python 定时器：
+# from datetime import datetime
+# from threading import Timer
+# # 打印时间函数
+# def printTime():
+#     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+#     t = Timer(3, printTime, ())
+#     t.start()
+
+# printTime()
+# print('执行完了！')
+
+
+# from datetime import datetime
+# from threading import Timer
+# def hello(): 
+#     print (datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+# t = Timer(10.0, hello) 
+# t.start()
+
+
+# import sched
+# import time
+# from datetime import datetime
+# # 初始化sched模块的scheduler类
+# # 第一个参数是一个可以返回时间戳的函数，第二参数可以在定时未到达之前阻塞
+# schedule = sched.scheduler(time.time, time.sleep)
+# # 被周期性调度触发函数
+# def printTime(inc):
+#     print(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+#     schedule.enter(inc, 0, printTime, (inc,))
+# # 默认参数60s
+# def main(inc):
+#     # enter四个参数分别为：间隔事件,优先级（用于同时到达两个事件同时执行的顺序），被调度触发的函数
+#     # 给该触发器函数的参数（tuple形式）
+#     # schedule.enter(0, 0, printTime, (inc,))
+#     printTime(inc)
+#     schedule.run()
+# # 5秒输出一次
+# main(2)
+# print('执行完了！')
+
+# import schedule
+# import time
+
+# def job():
+#     print("I'm working...")
+
+# schedule.every(2).seconds.do(job)
+
+
+'''
+# 图片居中
+import re
+import math
+from PIL import Image, ImageDraw, ImageFont
+
+FONT_TYPE = r"/System/Library/Fonts/PingFang.ttc"
+
+name = '耳朵-Android'
+icon_name = re.split(r'-|_',name)[0]
+path = '/Users/captain/Desktop'
+
+print ('icon_name=',icon_name)
+
+#先假设取一个值，而得到比例
+font_size= 27
+font = ImageFont.truetype(FONT_TYPE, size=font_size)
+text_size_width = font.getsize(icon_name)[0]
+print('text_size_width:',text_size_width)
+#计算值
+font_size_cal = math.floor(font_size*190/text_size_width)
+print('font_size_cal:',font_size_cal)
+if font_size_cal > 50:
+    font_size_cal = 50
+
+#font重新赋值
+font = ImageFont.truetype(FONT_TYPE, size=font_size_cal)
+text_size = font.getsize(icon_name)
+print('text_size:',text_size)
+
+x=100-text_size[0]/2
+y=100-text_size[-1]/2
+
+print(x,y)
+
+img = Image.new("RGB", size=(200, 200), color=(179,238,58))  # 创建图形
+draw = ImageDraw.Draw(img)
+
+draw.text((x, y), icon_name, font=font, fill='#191970')
+img.save('/Users/captain/Desktop/test.png','png')
+
+'''
 
 
 
