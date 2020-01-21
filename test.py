@@ -2039,5 +2039,12 @@ img.save('/Users/captain/Desktop/test.png','png')
 
 '''
 
-
+import logging
+logging.basicConfig(filename = '/Users/captain/Desktop/testlog.txt',level = logging.WARNING,format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s') #设置日志的消息级别
+logger = logging.getLogger(__name__)
+ 
+logger.info("Start print log")
+logger.debug("Do something")
+logger.warning("Something maybe fail.")
+logger.info("Finish")
 

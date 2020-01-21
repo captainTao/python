@@ -1217,3 +1217,96 @@ c.getinfo(pycurl.SIZE_DOWNLOAD)     #下载数据包大小
 c.getinfo(pycurl.SPEED_DOWNLOAD)    #平均下载速度
 c.getinfo(pycurl.SPEED_UPLOAD)      #平均上传速度
 c.getinfo(pycurl.HEADER_SIZE)       #HTTP头部大小 
+
+
+
+shutil
+---------
+https://www.jb51.net/article/145522.htm
+
+shutil模块提供了许多关于文件和文件集合的高级操作，特别提供了支持文件复制和删除的功能。
+
+
+
+解压
+------
+zipfile
+
+
+
+logging
+----------
+https://blog.csdn.net/pansaky/article/details/90710751
+
+import logging
+logging.basicConfig(level = logging.INFO,format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s',filename = '/Users/captain/Desktop/testlog.txt') #设置日志的消息级别
+logger = logging.getLogger(__name__)
+ 
+logger.info("Start print log")
+logger.debug("Do something")
+logger.warning("Something maybe fail.")
+logger.info("Finish")
+
+
+# 2016-10-09 19:11:19,434 - __main__ - INFO - Start print log
+# 2016-10-09 19:11:19,434 - __main__ - WARNING - Something maybe fail.
+# 2016-10-09 19:11:19,434 - __main__ - INFO - Finish
+
+# logging中可以选择很多消息级别，如debug、info、warning、error以及critical。
+# 通过赋予logger或者handler不同的级别，开发者就可以只输出错误信息到特定的记录文件，或者在调试时只记录调试信息。
+
+'''
+logging.basicConfig函数各参数：
+filename：指定日志文件名；
+filemode：和file函数意义相同，指定日志文件的打开模式，'w'或者'a'；
+
+format：指定输出的格式和内容，format可以输出很多有用的信息，
+%(levelno)s：打印日志级别的数值
+%(levelname)s：打印日志级别的名称
+%(pathname)s：打印当前执行程序的路径，其实就是sys.argv[0]
+%(filename)s：打印当前执行程序名
+%(funcName)s：打印日志的当前函数
+%(lineno)d：打印日志的当前行号
+%(asctime)s：打印日志的时间
+%(thread)d：打印线程ID
+%(threadName)s：打印线程名称
+%(process)d：打印进程ID
+%(message)s：打印日志信息
+'''
+
+# 只要输出文件：
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(level = logging.INFO)
+handler = logging.FileHandler("log.txt")
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+
+logger.addHandler(handler)
+ 
+logger.info("Start print log")
+logger.debug("Do something")
+logger.warning("Something maybe fail.")
+logger.info("Finish")
+
+# logger中添加StreamHandler，可以将日志输出到屏幕上，
+# 屏幕和输出文件：
+import logging
+logger = logging.getLogger(__name__)
+logger.setLevel(level = logging.INFO)
+handler = logging.FileHandler("log.txt")
+handler.setLevel(logging.INFO)
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+ 
+console = logging.StreamHandler()
+console.setLevel(logging.INFO)
+ 
+logger.addHandler(handler)
+logger.addHandler(console)
+ 
+logger.info("Start print log")
+logger.debug("Do something")
+logger.warning("Something maybe fail.")
+logger.info("Finish")

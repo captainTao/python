@@ -1129,3 +1129,18 @@ print(len(name.encode('utf-8'))) #6,utf-8是3倍，gbk是2倍
 >>> dir(time)
 ['CLOCK_MONOTONIC', 'CLOCK_MONOTONIC_RAW', 'CLOCK_PROCESS_CPUTIME_ID', 'CLOCK_REALTIME', 'CLOCK_THREAD_CPUTIME_ID', '_STRUCT_TM_ITEMS', '__doc__', '__loader__', '__name__', '__package__', '__spec__', 'altzone', 'asctime', 'clock', 'clock_getres', 'clock_gettime', 'clock_gettime_ns', 'clock_settime', 'clock_settime_ns', 'ctime', 'daylight', 'get_clock_info', 'gmtime', 'localtime', 'mktime', 'monotonic', 'monotonic_ns', 'perf_counter', 'perf_counter_ns', 'process_time', 'process_time_ns', 'sleep', 'strftime', 'strptime', 'struct_time', 'thread_time', 'thread_time_ns', 'time', 'time_ns', 'timezone', 'tzname', 'tzset']
 '''
+
+
+
+# 查看模块的官方文档地址
+>>> import time
+>>> help(time) 
+# 查看py文件存放的本地位置
+>>> import random
+>>> print(random.__file__)
+
+
+
+def __init__(self):
+    sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+    pass
