@@ -24,7 +24,7 @@
 # def person(name, age, **kw):
 #     print 'name:', name, 'age:', age, 'other:', kw
 
-# # person('Bob', 35, city='Beijing')
+# person('Bob', 35, city='Beijing')
 
 # kw = {'city': 'Beijing', 'job': 'Engineer'}
 # person('Jack', 24, city=kw['city'], job=kw['job'])
@@ -41,6 +41,10 @@
 # kw = {'x': 99}
 # func(*args, **kw)
 
+# def func(a, *kw):
+#     print 'a =', a,'args =', kw
+
+# func(1, 2, 3, 5, 6, 7)
 # def fact(n):
 #     if n==1:
 #         return 1
@@ -2039,12 +2043,16 @@ img.save('/Users/captain/Desktop/test.png','png')
 
 '''
 
-import logging
-logging.basicConfig(filename = '/Users/captain/Desktop/testlog.txt',level = logging.WARNING,format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s') #设置日志的消息级别
-logger = logging.getLogger(__name__)
+# import logging
+# logging.basicConfig(filename = '/Users/captain/Desktop/testlog.txt',level = logging.WARNING,format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s') #设置日志的消息级别
+# logger = logging.getLogger(__name__)
  
-logger.info("Start print log")
-logger.debug("Do something")
-logger.warning("Something maybe fail.")
-logger.info("Finish")
+# logger.info("Start print log")
+# logger.debug("Do something")
+# logger.warning("Something maybe fail.")
+# logger.info("Finish")
 
+# (Caused by SSLError(SSLError("bad handshake: Error([('SSL routines', 'tls_process_server_certificate', 'certificate verify failed')])")))
+# 找证书位置：
+# import certifi
+# print(certifi.where())

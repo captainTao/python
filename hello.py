@@ -1144,3 +1144,85 @@ print(len(name.encode('utf-8'))) #6,utf-8是3倍，gbk是2倍
 def __init__(self):
     sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
     pass
+
+# python上传https网站的时候，提示ssl失败：
+# 方法一（不推荐）：
+# requests中加verify=False
+# response = requests.post(url=URL, data=data, files=files, cookies = Cookie, headers={'Content-Type':'binary'}, verify=False)
+# 方法二（推荐）：
+# (Caused by SSLError(SSLError("bad handshake: Error([('SSL routines', 'tls_process_server_certificate', 'certificate verify failed')])")))
+# 找证书位置：
+# import certifi
+# print(certifi.where())
+
+
+
+# Python-文件和文件夹的移动、复制、删除、重命名
+# 转自：http://blog.csdn.net/woshisangsang/article/details/74360612
+# ---------------------------------
+#文件、文件夹的移动、复制、删除、重命名 shutil
+
+#导入shutil模块和os模块
+import shutil,os
+
+#复制单个文件,目标文件夹需要存在
+shutil.copy("src","des")
+#复制并重命名新文件
+shutil.copy("C:\\a\\2.txt","C:\\b\\121.txt")
+#复制整个目录(备份)，目标文件夹需要不存在
+shutil.copytree("src","dec")
+
+#删除文件
+os.unlink("C:\\b\\1.txt")
+os.unlink("C:\\b\\121.txt")
+#删除空文件夹
+try:
+    os.rmdir("C:\\b\\new_a")
+except Exception as ex:
+    print("错误信息："+str(ex))#提示：错误信息，目录不是空的
+#删除文件夹及内容
+shutil.rmtree("C:\\b\\new_a")
+
+#移动文件
+shutil.move("C:\\a\\1.txt","C:\\b")
+#移动文件夹
+shutil.move("C:\\a\\c","C:\\b")
+
+#重命名文件
+shutil.move("C:\\a\\2.txt","C:\\a\\new2.txt")
+#重命名文件夹
+shutil.move("C:\\a\\d","C:\\a\\new_d")
+
+
+
+# https://www.jianshu.com/p/b9da5fd2e5cf
+
+# 压缩文件
+# --------------
+import zipfile
+# 加载压缩文件，创建ZipFile对象
+# class zipfile.ZipFile(file[, mode[, compression[, allowZip64]]])
+# 参数file表示文件的路径或类文件对象(file-like object)
+# 参数mode指示打开zip文件的模式，默认值为'r'，表示读已经存在的zip文件，也可以为'w'或'a'，
+# 'w'表示新建一个zip文档或覆盖一个已经存在的zip文档，'a'表示将数据附加到一个现存的zip文档中
+# 参数compression表示在写zip文档时使用的压缩方法，它的值可以是zipfile. ZIP_STORED 或zipfile. ZIP_DEFLATED。
+# 如果要操作的zip文件大小超过2G，应该将allowZip64设置为True。
+file_dir = 'D:/text.zip'
+zipFile = zipfile.ZipFile(file_dir)
+
+# 01 ZipFile.infolist() 获取zip文档内所有文件的信息，返回一个zipfile.ZipInfo的列表
+print(zipFile.infolist())
+# 02 ZipFile.namelist() 获取zip文档内所有文件的名称列表
+print(zipFile.namelist())
+# 03 ZipFile.printdir() 将zip文档内的信息打印到控制台上
+print(zipFile.printdir())
+
+
+# 解压文件
+# ----------
+import zipfile
+import os
+zipFile = zipfile.ZipFile(file_dir)
+for file in zipFile.namelist():
+    zipFile.extract(file, 'd:/Work')
+zipFile.close()
