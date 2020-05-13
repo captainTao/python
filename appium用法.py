@@ -676,3 +676,16 @@ driver扩展：比如增加了resetApp等操作app的方法
 action扩展：增加一些移动端的特有的action（怎么描述呢，相当于是移动端 特有的操作），比如swipe，shake(嗯，有了这个方法就可以让代码帮你摇一摇了)等；
 locator扩展：增加了一些移动端专属的定位策略
 
+
+
+appium app ios设备配置json：
+{
+  "deviceName": "PG-0193",
+  "platformVersion": "13.1",
+  "udid": "3e2f4023988f2e674b26ee7a8b55d65fbd034260",
+  "automationName": "XCUITest",
+  "noReset": false,
+  "platformName": "iOS",
+  "bundleId": "com.vstudio.salad",
+  "autoLaunch": false
+}

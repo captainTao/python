@@ -1310,3 +1310,101 @@ logger.info("Start print log")
 logger.debug("Do something")
 logger.warning("Something maybe fail.")
 logger.info("Finish")
+
+
+
+
+random
+---------
+>>> random.randint(0,5)
+1
+>>> random.randint(0,5)
+5
+>>> random.randint(0,5)
+5
+>>> random.randint(0,5)
+0
+
+
+>>> random.expovariate(1)
+1.5441221122761948
+>>> random.expovariate(1)
+0.12692560410200332
+>>> random.expovariate(1)
+0.05838272227022792
+>>> random.expovariate(1)
+0.1388023865888321
+
+
+>>> l = [1,2,3,4,5,6,7]
+>>> random.shuffle(l)
+>>> l
+[6, 5, 7, 3, 1, 2, 4]
+
+
+locust
+--------
+https://docs.locust.io/en/stable/quickstart.html
+
+
+from locust import HttpLocust, TaskSet, between
+
+def login(l):
+    l.client.post("/login", {"username":"ellen_key", "password":"education"})
+
+def logout(l):
+    l.client.post("/logout", {"username":"ellen_key", "password":"education"})
+
+def index(l):
+    l.client.get("/")
+
+def profile(l):
+    l.client.get("/profile")
+
+class UserBehavior(TaskSet):
+    tasks = {index: 2, profile: 1}
+
+    def on_start(self):
+        login(self)
+
+    def on_stop(self):
+        logout(self)
+
+class WebsiteUser(HttpLocust):
+    task_set = UserBehavior
+    wait_time = between(5.0, 9.0)
+
+''''两种定义方法上面同下面'''    
+
+from locust import HttpLocust, TaskSet, task, between
+
+class UserBehaviour(TaskSet):
+    def on_start(self):
+        """ on_start is called when a Locust start before any task is scheduled """
+        self.login()
+
+    def on_stop(self):
+        """ on_stop is called when the TaskSet is stopping """
+        self.logout()
+
+    def login(self):
+        self.client.post("/login", {"username":"ellen_key", "password":"education"})
+
+    def logout(self):
+        self.client.post("/logout", {"username":"ellen_key", "password":"education"})
+
+    @task(2)
+    def index(self):
+        self.client.get("/")
+
+    @task(1)
+    def profile(self):
+        self.client.get("/profile")
+
+class WebsiteUser(HttpLocust):
+    task_set = UserBehaviour
+    wait_time = between(5, 9)
+
+
+locust -f locust_files/my_locust_file.py
+
