@@ -942,6 +942,8 @@ if __name__=='__main__':
 
 
 requests
+# -------------------
+https://blog.csdn.net/qq_37616069/article/details/80376776
 url: http://www.cnblogs.com/weke/articles/6309044.html
 安装：pip install requests
 ['adapters', 'api', 'auth', 'certs', 'chardet', 'check_compatibility', 'codes', 'compat', 'cookies', 'delete', 'exceptions', 'get', 'head', 'hooks', 'logging', 'models', 'options', 'packages', 'patch', 'post', 'put', 'pyopenssl', 'request', 'session', 'sessions', 'status_codes', 'structures', 'urllib3', 'utils', 'warnings']
@@ -967,12 +969,105 @@ print r.json() # 在requests库中有一个内置的JSON解码器，来帮助我
 
 # 使用requests发送一个请求，我们可以获取这个请求的响应内容，HTTP的状态码，以及URL
 import requests
-r=requests.get('http://www.bing.com')
+r=requests.get('http://www.bing.com', timeout = 0.001)
 print u'HTTP状态码:',r.status_code
 print u'请求的URL:',r.url
 print u'获取Headers:',r.headers
-print u'响应内容:',r.text
+print u'响应内容:',r.text  #返回的是unicode格式数据
+print r.content #返回二进制字节流数据，可以用来保存图片
+print r.json() #如果是json,可以直接显示
 
+# get
+import requests
+kw = {'wd':'长城'} 
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
+# params 接收一个字典或者字符串的查询参数，字典类型自动转换为url编码，不需要urlencode()
+response = requests.get("http://www.baidu.com/s?", params = kw, headers = headers)
+# 查看响应内容，response.text 返回的是Unicode格式的数据
+print (response.text)
+# 查看响应内容，response.content返回的字节流数据
+print (response.content)
+print (response.json())
+# 查看完整url地址
+print (response.url)
+# 查看cookie
+print (response.cookies)
+# 查看响应头部字符编码
+print (response.encoding) 
+# 查看响应码
+print (response.status_code)
+
+
+# post
+import requests
+formdata = {
+    "type":"AUTO",
+    "i":"i love python",
+    "doctype":"json",
+    "xmlVersion":"1.8",
+    "keyfrom":"fanyi.web",
+    "ue":"UTF-8",
+    "action":"FY_BY_ENTER",
+    "typoResult":"true"
+}
+url = "http://fanyi.youdao.com/translate?smartresult=dict&smartresult=rule&smartresult=ugc&sessionFrom=null" 
+headers={ "User-Agent": "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/51.0.2704.103 Safari/537.36"} 
+response = requests.post(url, data = formdata, headers = headers) 
+# unicode码展示的
+print (response.text)
+# 如果是json文件可以直接显示
+print (response.json())
+
+
+
+# 代理：
+import requests
+# 根据协议类型，选择不同的代理
+proxies = {
+  "http": "http://12.34.56.79:9527",
+  "https": "http://12.34.56.79:9527",
+}
+ 
+response = requests.get("http://www.baidu.com", proxies = proxies)
+
+
+
+# 重定向：
+# request自动处理重定向，可以使用响应对象的history方法追踪重定向
+res = requests.get(url)
+print res.history
+
+
+#cookie
+import requests
+response = requests.get("http://www.baidu.com/")
+# 返回CookieJar对象:
+cookiejar = response.cookies
+# 将CookieJar转为字典：
+cookiedict = requests.utils.dict_from_cookiejar(cookiejar)
+print (cookiejar)
+
+
+
+#session
+import requests
+# 1. 创建session对象，可以保存Cookie值
+ssion = requests.session()
+# 2. 处理 headers
+headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/54.0.2840.99 Safari/537.36"}
+# 3. 需要登录的用户名和密码
+data = {"email":"mr_mao_hacker@163.com", "password":"alarmchime"}   
+# 4. 发送附带用户名和密码的请求，并获取登录后的Cookie值，保存在ssion里
+ssion.post("http://www.renren.com/PLogin.do", data = data)
+# 5. ssion包含用户登录后的Cookie值，可以直接访问那些登录后才可以访问的页面
+response = ssion.get("http://www.renren.com/410043129/profile")
+# 6. 打印响应内容
+print (response.text)
+
+
+#https ssl认证
+import requests
+response = requests.get("https://www.baidu.com/", verify=True)
 
 
 
@@ -1231,7 +1326,8 @@ shutil模块提供了许多关于文件和文件集合的高级操作，特别�
 解压
 ------
 zipfile
-
+# 可以见hello.py里面的文件
+https://www.cnblogs.com/gufengchen/archive/2019/05/31/10956009.html
 
 
 logging
@@ -1406,5 +1502,100 @@ class WebsiteUser(HttpLocust):
     wait_time = between(5, 9)
 
 
+# wait time也可以用函数自己制定，常用的为between，取的是其中的随机值
+class MyLocust(Locust):
+    task_set = MyTaskSet
+    last_wait_time = 0
+
+    def wait_time(self):
+        self.last_wait_time += 1
+        return self.last_wait_time
+
+# 制定执行locust_file用 -f
 locust -f locust_files/my_locust_file.py
 
+
+# 比重，越大执行次数越多，此例按照3：1来严格执行，跟@task()装饰器中的参数是一个意思
+class WebUserLocust(Locust):
+    weight = 3
+    ...
+
+class MobileUserLocust(Locust):
+    weight = 1
+    ...
+
+
+# taskset嵌套
+class ForumPage(TaskSet):
+    @task(20)
+    def read_thread(self):
+        pass
+
+    @task(1)
+    def new_thread(self):
+        pass
+
+    @task(5)
+    def stop(self):
+        self.interrupt()
+
+class UserBehaviour(TaskSet):
+    tasks = {ForumPage:10}
+
+    @task
+    def index(self):
+        pass
+
+# 或者这样嵌套：
+class MyTaskSet(TaskSet):
+    @task
+    class SubTaskSet(TaskSet):
+        @task
+        def my_task(self):
+            pass
+
+# TaskSequence顺序执行
+class MyTaskSequence(TaskSequence):
+    @seq_task(1)
+    def first_task(self):
+        pass
+
+    @seq_task(2)
+    def second_task(self):
+        pass
+
+    @seq_task(3)
+    @task(10)
+    def third_task(self):
+        pass
+
+"""
+# order of events: 钩子函数
+Locust setup (once)
+TaskSet setup (once)
+TaskSet on_start (every time a user starts executing a new TaskSet)
+TaskSet tasks…
+TaskSet on_stop (every time a user stops executing a TaskSet, either to run a different one or at shutdown)
+TaskSet teardown (once)
+Locust teardown (once)  
+"""
+
+# http请求：
+# HttpLocust继承自locust,会多一个client属性，是HttpSession的实例，HttpSession是 requests.Session的子类
+from locust import HttpLocust, TaskSet, task, between
+
+class MyTaskSet(TaskSet):
+    @task(2)
+    def index(self):
+        self.client.get("/")
+
+    @task(1)
+    def about(self):
+        self.client.get("/about/")
+
+class MyLocust(HttpLocust):
+    task_set = MyTaskSet
+    wait_time = between(5, 15)
+
+#post请求 
+response = self.client.post("/login", {"username":"testuser", "password":"secret"})      
