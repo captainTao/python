@@ -689,3 +689,19 @@ appium app ios设备配置json：
   "bundleId": "com.vstudio.salad",
   "autoLaunch": false
 }
+
+
+# appium定位：
+# http://www.voidcn.com/article/p-hhwvvgjh-bxa.html
+
+@Override
+  public By MobileBy(String text) {
+//    text = text.trim();
+    if (text != null && text.replaceAll("\\(", "").startsWith("/"))
+      return MobileBy.xpath(text);
+    // http://blog.csdn.net/jianglianye21/article/details/78326174
+    if (text.matches(
+        ".+?(>|<|(>=)|(<=)|(!=)|(==)|(IN)|(BETWEEN)|(CONTAINS)|(BEGINSWITH)|(ENDSWITH)|(LIKE)|(MATCHES)|(AND)|(OR)).+"))
+      return MobileBy.iOSNsPredicateString(text);
+    return MobileBy.AccessibilityId(text);
+  }

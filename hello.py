@@ -2,6 +2,19 @@
 # -*- coding: utf-8 -*-
 # -*-  -*-
 
+# 修复文件的编码错误：
+# sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+
+# 执行python文件的时候，找不到对应的模块，需要在文件开头添加：
+# sys.path.append(os.path.dirname(sys.path[0]))
+
+
+'''
+问题：
+1.直接print(Logger)会报错，如何查看实例化的对象是单例？
+
+'''
+
 '''
 re:
 __________
@@ -1079,8 +1092,8 @@ Sys模块
 sys.argv: 实现从程序外部向程序传递参数。
 sys.exit([arg]): 程序中间的退出，arg=0为正常退出。
 sys.getdefaultencoding(): 获取系统当前编码，一般默认为ascii。
-sys.setdefaultencoding(): 设置系统默认编码，执行dir（sys）时不会看到这个方法，在解释器中执行不通过，可以先执行reload(sys)，在执行 setdefaultencoding(‘utf8’)，此时将系统默认编码设置为utf8。（见设置系统默认编码 ）
-sys.getfilesystemencoding(): 获取文件系统使用编码方式，Windows下返回’mbcs’，mac下返回’utf-8’.
+sys.setdefaultencoding(): 设置系统默认编码，执行dir（sys）时不会看到这个方法，在解释器中执行不通过，可以先执行reload(sys)，在执行 setdefaultencoding('utf8')，此时将系统默认编码设置为utf8。（见设置系统默认编码 ）
+sys.getfilesystemencoding(): 获取文件系统使用编码方式，Windows下返回'mbcs'，mac下返回'utf-8'.
 sys.path: 获取指定模块搜索路径的字符串集合，可以将写好的模块放在得到的某个路径下，就可以在程序中import时正确找到。
 sys.platform: 获取当前系统平台。
 sys.stdin,sys.stdout,sys.stderr stdin , stdout , 以及stderr 变量包含与标准I/O 流对应的流对象. 如果需要更好地控制输出,而print 不能满足你的要求, 它们就是你所需要的. 你也可以替换它们, 这时候你就可以重定向输出和输入到其它设备( device ), 或者以非标准的方式处理它们
@@ -1101,7 +1114,7 @@ Py3 自动把文件编码转为unicode，Python2并不会自动的把文件编�
 
 UTF-8 --> decode 解码 --> Unicode
 Unicode --> encode 编码 --> GBK / UTF-8 等
-使用type可以查看编码形式，unicode是‘unicode’,gbk和utf-8是‘str或bytes’。
+使用type可以查看编码形式，unicode是'unicode',gbk和utf-8是'str或bytes'。
 '''
 
 
@@ -1226,3 +1239,387 @@ zipFile = zipfile.ZipFile(file_dir)
 for file in zipFile.namelist():
     zipFile.extract(file, 'd:/Work')
 zipFile.close()
+
+
+'''
+python日志封装
+--------------
+https://blog.csdn.net/cyh1111/article/details/53405795?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.edu_weight&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.edu_weight
+封装成为单例模式
+'''
+import os
+import logging
+import logging.handlers
+import threading
+
+
+class Logger(logging.Logger):
+    _instance_lock = threading.Lock()
+
+    def __init__(self, log_path=None):
+        """
+        初始化
+        :param log_path: 日志保存路径
+        :return:
+        """
+        super(Logger, self).__init__(self)
+        log_format = "[%(asctime)s] - %(filename)s [Line:%(lineno)d] - [%(levelname)s]-[thread:%(thread)s]-[" \
+                     "process:%(process)s] - %(message)s "
+        data_format = "%Y-%m-%d %H:%M:%S"
+        formatter = logging.Formatter(log_format, data_format)
+        # 控制台输出log
+        console_handler = logging.StreamHandler()
+        console_handler.setLevel(logging.INFO)
+        console_handler.setFormatter(formatter)
+        self.addHandler(console_handler)
+        # 写入文件log
+        if log_path is not None:
+            log_file_path = os.path.abspath(log_path) + '/logs'
+            if not os.path.exists(log_file_path):
+                os.makedirs(log_file_path)
+            output_handler = logging.handlers.RotatingFileHandler(filename=log_file_path + '/log.txt', encoding='utf-8',
+                                                                  maxBytes=10 * 1024 * 1024, backupCount=10)
+            output_handler.setLevel(logging.DEBUG)
+            output_handler.setFormatter(formatter)
+            self.addHandler(output_handler)
+
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            with cls._instance_lock:
+                if not hasattr(cls, '_instance'):
+                    cls._instance = object.__new__(cls)
+            return cls._instance
+        return cls._instance
+
+
+if __name__ == '__main__':
+    log1 = Logger()
+    log2 = Logger()
+    log3 = Logger()
+    print(id(log1) == id(log2) == id(log3))
+
+
+
+
+'''
+json.dumps(), json.loads()
+-----------------------
+https://blog.csdn.net/lizhixin705/article/details/82344209
+'''
+
+1.将数据结构转为json
+import json
+data = {
+    'name' : 'myname',
+    'age' : 100,
+}
+json_str = json.dumps(data)
+
+
+2.json.loads将一个JSON编码的字符串转换回一个Python数据结构：
+
+data = json.loads(json_str)
+
+3. json.dump() 和 json.load() 来编码和解码JSON数据,用于处理文件。
+with open('test.json', 'w') as f:
+    json.dump(data, f)
+ 
+with open('test.json', 'r') as f:
+    data = json.load(f)
+
+
+
+把字符串转为数据结构：
+-------------------
+# https://blog.csdn.net/weixin_33729196/article/details/94672998
+
+
+# No.1:通过json:
+>>> import json
+>>> user_info= '{"name" : "john", "gender" : "male", "age": 28}'
+>>> user_dict = json.loads(user_info)
+# 局限： key-value必须用双引号的字符串
+
+# No.2:通过eval
+>>> user_info = '{"name" : "john", "gender" : "male", "age": 28}'
+>>> user_dict = eval(user_info)
+# 局限:存在一些安全性问题
+
+# No.3:通过literal_eval
+import ast
+message = ast.literal_eval(self.content)
+
+
+
+
+
+单例模式：
+-----------------
+https://www.jianshu.com/p/6a1690f0dd00
+
+
+
+
+
+python执行os的命令：
+---------------------------------------
+# https://www.jb51.net/article/186301.htm
+
+
+# 1. os.system('cmd')
+
+import os
+val = os.system('ls -al')
+print (val)
+
+
+# 2. os.popen('cmd')
+#用read(),readlines()读取执行的结果：
+
+val = os.popen('ls -al')
+for temp in val.readlines():
+    print (temp)
+
+
+# 3. 使用commands模块，有三个方法可以使用：
+
+（1）commands.getstatusoutput(cmd)，其以字符串的形式返回的是输出结果和状态码，即（status,output）。
+（2）commands.getoutput(cmd)，返回cmd的输出结果。
+（3）commands.getstatus(file)，返回ls -l file的执行结果字符串，调用了getoutput，不建议使用此方法
+
+
+# 4. subprocess模块，允许创建很多子进程，创建的时候能指定子进程和子进程的输入、输出、错误输出管道，执行后能获取输出结果和执行状态。
+ (1）subprocess.run()：python3.5中新增的函数， 执行指定的命令， 等待命令执行完成后返回一个包含执行结果的CompletedProcess类的实例。
+（2）subprocess.call()：执行指定的命令， 返回命令执行状态， 功能类似os.system（cmd）。
+（3）subprocess.check_call()：python2.5中新增的函数, 执行指定的命令, 如果执行成功则返回状态码， 否则抛出异常。
+
+
+
+
+os.system()传递参数：
+--------------------
+# https://blog.csdn.net/njafei/article/details/72764990
+
+os.system("shell command argusFormat" % argus)
+
+# 单个参数
+param = "I'm param"
+os.system("python haha.py %s" % (param))
+
+# 多个参数
+paramA = "I'm paramA"
+paramB = "I'm paramB"
+os.system("python haha.py %s %s" % (paramA,paramB))
+
+
+# python格式化字符：
+
+%s    字符串 (采用str()的显示)
+
+%r    字符串 (采用repr()的显示)
+
+%c    单个字符
+
+%b    二进制整数
+
+%d    十进制整数
+
+%i    十进制整数
+
+%o    八进制整数
+
+%x    十六进制整数
+
+%e    指数 (基底写为e)
+
+%E    指数 (基底写为E)
+
+%f    浮点数
+
+%F    浮点数，与上相同
+
+%g    指数(e)或浮点数 (根据显示长度)
+
+%G    指数(E)或浮点数 (根据显示长度)
+
+%%    字符"%"
+
+
+
+# python注入shell变量：
+--------------------
+https://www.cnblogs.com/momoyan/p/9145992.html
+
+python -> shell：
+-----------------
+# 1.环境变量
+
+import os
+var=123 #或var='123'  
+os.environ['var']=str(var)  #environ的键值必须是字符串   
+os.system('echo $var')  
+
+# 2.字符串连接
+
+import os  
+path='/root/a.txt'
+var=[1]  
+var='bash'  
+os.system('echo ' + path)                  #注意echo后有空格   
+os.system('echo ' + str(var[0]))  
+os.system('echo ' + var + ' /root/c.sh') #注意echo后和/root前有空格    
+ 
+
+# 3.通过管道
+import os  
+var='123'  
+os.popen('wc -c', 'w').write(var)  
+ 
+
+# 4.通过文件
+
+output = open('/tmp/mytxt', 'w')  
+output.write(S)      #把字符串S写入文件   
+output.writelines(L) #将列表L中所有的行字符串写到文件中   
+output.close()  
+
+# 5.通过重定向标准备输出
+
+buf = open('/root/a.txt', 'w')  
+print >> buf, '123\n', 'abc'  
+# 或
+
+print >> open('/root/a.txt', 'w'), '123\n', 'abc' #写入或生成文件   
+print >> open('/root/a.txt', 'a'), '123\n', 'abc' #追加  
+ 
+
+
+shell -> python：
+----------------
+# 1.管道
+
+import os  
+var=os.popen('echo -n 123').read() 
+print var  
+ 
+# 2.
+
+import commands  
+var=commands.getoutput('echo abc')       #输出结果   
+var=commands.getstatusoutput('echo abc') #退出状态和输出结果  
+
+# 3.文件
+
+input = open('/tmp/mytxt', 'r')  
+S = input.read( )      #把整个文件读到一个字符串中   
+S = input.readline( )  #读下一行（越过行结束标志）   
+L = input.readlines( ) #读取整个文件到一个行字符串的列表中  
+
+input = open('/tmp/mytxt', 'r')  
+# 本文转载自：https://blog.csdn.net/blackmanren/article/details/12904603
+
+
+
+上传文件模块：
+-----------
+https://www.jianshu.com/p/9738e53a7db3
+
+pip install requests_toolbelt
+
+
+
+from requests_toolbelt import MultipartEncoder
+
+encoder = MultipartEncoder({
+            'field': ('file_name', b'{"a": "b"}', 'application/json',
+                      {'X-My-Header': 'my-value'})
+        })
+
+'''
+field：服务端约定的上传文件字段名。一般用到的是file，需要和服务端沟通获取。
+
+file_name: 文件名。一般可以任意写，服务端大多是拿到文件后自己再次命名。
+
+b'{"a":"b"}'：文件内容。例：open('/your/file/path', 'rb')
+
+'application/json'：文件的MimeType。不同文件类型对应的MimeType可以到这里查询。
+
+{'X-My-Header': 'my-value'}：其他内容，可不传。
+
+
+android和ios的安装文件MIME类型
+.apk:
+application/vnd.android.package-archive
+
+.ipa:
+application/octet-stream.ipa
+'''
+
+
+import requests
+from requests_toolbelt import MultipartEncoder
+
+
+upload_url = 'https://your/upload/url'
+payload = {
+    'file': ('upload.pdf', open('sync_test.pdf', 'rb'), 'application/pdf')
+}
+m = MultipartEncoder(payload)
+
+
+headers = {
+    "Content-Type": m.content_type,
+    "other-keys": "other-values"
+}
+
+r = requests.post(upload_url, headers=headers, data=m)
+print(r.json())
+
+
+
+
+
+上传文件的两种方式：
+----------------
+https://www.cnblogs.com/shuzf/p/11972116.html
+
+https://blog.csdn.net/xy_best_/article/details/92839653
+
+
+# 方式一”
+from requests_toolbelt import MultipartEncoder
+import requests
+
+# from_data上传文件，注意参数名propertyMessageXml
+data = MultipartEncoder(fields={'propertyMessageXml': ('filename', open('D:/123.xml', 'rb'), 'text/xml')})
+requests.post(url=url,data=data,headers={ 'Content-Type': data.content_type})
+
+#raw上传文件
+file = open('D:/123.xml','rb')
+requests.post(url=url,data=file.read(),headers={'Content-Type':'text/xml'})
+
+#binary上传文件
+files={'file':open('D:/123.xml','rb')}
+requests.post(url=url,files=files,headers={'Content-Type':'binary'})
+
+
+
+# 方式二：
+
+import requests,glob
+from urllib3 import encode_multipart_formdata
+
+def upload_file(url=None,path=None,file_path=None):
+    if path:
+        for file_path in glob.glob(path + '\*'): #批量文件
+            data={}
+            data['file'] = (file_path.split("/")[-1], open(file_path, 'rb').read())  # 名称，读文件
+            encode_data = encode_multipart_formdata(data)
+            res = requests.post(url, headers={'Content-Type':encode_data[1]},data=encode_data[0])
+            return res.text
+    if file_path:
+        data = {}
+        data['file'] = (file_path.split("/")[-1], open(file_path, 'rb').read())  # 名称，读文件
+        encode_data = encode_multipart_formdata(data)
+        res = requests.post(url, headers={'Content-Type': encode_data[1]}, data=encode_data[0])
+        return res.text

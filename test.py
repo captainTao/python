@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+
+# 修复文件的编码错误：
+# sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+
 # def calc(numbers):
 #     sum = 0
 #     for n in numbers:
@@ -2051,6 +2055,8 @@ img.save('/Users/captain/Desktop/test.png','png')
 # logger.debug("Do something")
 # logger.warning("Something maybe fail.")
 # logger.info("Finish")
+
+# 等级 debug < info < warning < error
 
 # (Caused by SSLError(SSLError("bad handshake: Error([('SSL routines', 'tls_process_server_certificate', 'certificate verify failed')])")))
 # 找证书位置：
