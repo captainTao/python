@@ -15,13 +15,13 @@ class Https:
     request_timeout = 60
 
     @staticmethod
-    def __send_data(request_type, url, api, request, header: dict, **kwargs):
+    def __send_data(request_type, url, api, data, header: dict, **kwargs):
         """
         发送http请求
         :param request_type: get/post
         :param url: url或全域名
         :param api: 二级域名
-        :param request:
+        :param data:
         :param header:
         :param **kwargs, params=None, data=None, headers=None, cookies=None, files=None,
             auth=None, timeout=None, allow_redirects=True, proxies=None,
@@ -42,9 +42,10 @@ class Https:
         r = None
         result_json = None
         code = 0  # -100为请求超时
+        start_time = Timer.get_time(False)
         log.info('请求地址:{0}'.format(url_api))
         log.info('请求类型:%s' % request_type)
-        log.info('请求内容:{0}'.format(request))
+        log.info('请求内容:{0}'.format(data))
         if header is not None:
             log.info('请求头:{0}'.format(header))
             content_type = 'application/x-www-form-urlencoded'
@@ -56,39 +57,38 @@ class Https:
                         content_type = value
                         break
         try:
-            start_time = Timer.get_time(False)
             if request_type == 'post':
-                if type(request) == MultipartEncoder:
+                if type(data) == MultipartEncoder:
                     log.info('use MultipartEncoder to requests')
-                    r = requests.post(url_api, data=request, headers=header, timeout=Https.request_timeout, **kwargs)
+                    r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout, **kwargs)
                 else:
                     if content_type is not None:
                         # dict,上传文件request_files = {'file123': ('1.jpg', open('D:/tmp/1.jpg', 'rb'))}
                         if content_type.find(
                                 'multipart/form-data') > -1:
-                            if 'request_files' in request:
-                                request_files = request.pop('request_files')
+                            if 'request_files' in data:
+                                request_files = data.pop('request_files')
                             else:
                                 request_files = None
-                            r = requests.post(url_api, data=request, files=request_files, headers=header,
+                            r = requests.post(url_api, data=data, files=request_files, headers=header,
                                               timeout=Https.request_timeout, **kwargs)
-                        # str,'<?xml  ?>' str
+                        # str,'<?xml?>' str
                         elif content_type.find('text/xml') > -1:
-                            r = requests.post(url_api, data=request, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout, **kwargs)
                         # dict,list
                         elif content_type.find('application/json') > -1:
-                            r = requests.post(url_api, json=request, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, json=data, headers=header, timeout=Https.request_timeout, **kwargs)
                         # dict,files={'file':open('test.xls','rb')}
                         elif content_type.find('binary') > -1:
-                            r = requests.post(url_api, files=request, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, files=data, headers=header, timeout=Https.request_timeout, **kwargs)
                         # dict,默认application/x-www-form-urlencoded
                         else:
-                            r = requests.post(url_api, data=request, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout, **kwargs)
                     else:
                         # dict,
-                        r = requests.post(url_api, data=request, headers=header, timeout=Https.request_timeout, **kwargs)
+                        r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout, **kwargs)
             elif request_type == 'get':
-                r = requests.get(url_api, params=request, headers=header, timeout=Https.request_timeout, **kwargs)
+                r = requests.get(url_api, params=data, headers=header, timeout=Https.request_timeout, **kwargs)
             # 响应处理
             response_time = int(r.elapsed.total_seconds() * 1000)
             code = r.status_code
@@ -130,12 +130,12 @@ class Https:
         return r
 
     @staticmethod
-    def post(url: str = '', api: str = '', request=None, header: dict = None, **kwargs):
-        return Https.__send_data('post', url, api, request, header, **kwargs)
+    def post(url: str = '', api: str = '', data=None, header: dict = None, **kwargs):
+        return Https.__send_data('post', url, api, data, header, **kwargs)
 
     @staticmethod
-    def get(url: str = '', api: str = '', request=None, header: dict = None, **kwargs):
-        return Https.__send_data('get', url, api, request, header, **kwargs)
+    def get(url: str = '', api: str = '', data=None, header: dict = None, **kwargs):
+        return Https.__send_data('get', url, api, data, header, **kwargs)
 
     @staticmethod
     def download(url: str, save_path: str):

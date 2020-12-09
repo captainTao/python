@@ -138,7 +138,14 @@ class Timer:
             date1 = datetime.datetime(date1[0], date1[1], date1[2])
             date2 = datetime.datetime(date2[0], date2[1], date2[2])
             # 返回两个变量相差的值，就是相差天数
-            return date2 - date1
+            return (date2 - date1).days
+
+    @staticmethod
+    def get_hour_now():
+        """
+        返回小时，24h制
+        """
+        return int(time.strftime('%H', time.localtime(time.time())))
 
 
 def is_date(string):

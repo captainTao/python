@@ -7,15 +7,18 @@ import threading
 class Logger(logging.Logger):
     _instance_lock = threading.Lock()
 
-    def __init__(self, log_path=None):
+    def __init__(self, log_path=None, process=False):
         """
         初始化
         :param log_path: 日志保存路径
         :return:
         """
         super(Logger, self).__init__(self)
-        log_format = "[%(asctime)s] - %(filename)s [Line:%(lineno)d] - [%(levelname)s]-[thread:%(thread)s]-[" \
-                     "process:%(process)s] - %(message)s "
+        if process:
+            log_format = "[%(asctime)s] - %(filename)s [Line:%(lineno)d] - [%(levelname)s]-[thread:%(thread)s]-[" \
+                         "process:%(process)s] - %(message)s "
+        else:
+            log_format = "%(asctime)s %(filename)s-Line:%(lineno)d [%(levelname)s]: %(message)s"
         data_format = "%Y-%m-%d %H:%M:%S"
         formatter = logging.Formatter(log_format, data_format)
         # 控制台输出log

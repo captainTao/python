@@ -1623,3 +1623,113 @@ def upload_file(url=None,path=None,file_path=None):
         encode_data = encode_multipart_formdata(data)
         res = requests.post(url, headers={'Content-Type': encode_data[1]}, data=encode_data[0])
         return res.text
+
+
+
+
+
+画图：
+---------
+'''
+https://blog.csdn.net/w576233728/article/details/86538060?utm_medium=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-BlogCommendFromBaidu-1.control
+
+https://blog.csdn.net/jenyzhang/article/details/52046372
+
+https://www.cnblogs.com/onemorepoint/p/7482644.html
+
+绘制折线统计图的时候：
+marker关键字参数可以和color以及linestyle这两个关键字参数合并为一个字符串
+
+pip install numpy
+pip install scipy
+sudo apt-get install python-matplotlib
+'''
+
+
+
+#绘制sin曲线
+import numpy as np
+import matplotlib.pyplot as plt
+ 
+#设置x,y轴的数值（y=sinx）
+x = np.linspace(0, 10, 1000)
+y1 = np.sin(x)
+y2 = np.cos(x)
+ 
+#创建绘图对象，figsize参数可以指定绘图对象的宽度和高度，单位为英寸，一英寸=80px
+plt.figure(figsize=(8,4))
+ 
+#在当前绘图对象中画图（x轴,y轴,给所绘制的曲线的名字，画线颜色，画线宽度）
+plt.plot(x,y1,label="$sin(x)$",color="green",linewidth=2)
+plt.plot(x,y2,label="$cos(x)$",color="blue",linewidth=2)
+
+#X轴的文字
+plt.xlabel("Time(s)")
+#Y轴的文字
+plt.ylabel("Volt")
+#图表的标题
+plt.title("PyPlot First Example")
+ 
+#Y轴的范围
+plt.ylim(-1.2,1.2)
+ 
+#显示图示
+plt.legend()
+#显示图
+plt.show()
+#保存图
+plt.savefig("sinx.jpg")
+
+
+# 设置默认字体，为了避免中问字体写入的时候有问题，
+# 设置过此字体不生效
+# plt.rcParams['font.sans-serif'] = ['SimHei']
+# plt.rcParams['axes.unicode_minus'] = False
+
+
+# 设置尺寸：
+# plt.figure(figsize=(8, 8)) # 像素缺省值为80dpi,这而宽度为8*80 = 640px;
+
+# 设置x,y坐标
+# x1 = np.random.normal(2, 1.2, 300)  # 随机产生300个平均值为2，方差为1.2的浮点数，即第一簇点的x轴坐标
+# y1 = np.random.normal(2, 1.2, 300)  # 随机产生300个平均值为2，方差为1.2的浮点数，即第一簇点的y轴坐标
+
+# np.arange(0, 5, 0.1)
+
+
+# 折线图
+# l1 = plt.plot(byte1, speed1, colors1, linewidth=1, label='mainland')
+# l2 = plt.plot(byte2, speed2, colors2, linewidth=1, label='taiwan')
+# 折线图可以一条一条画，也可以一个语句画
+# plt.plot(byte1, speed1, 'ro-', byte2, speed2, 'g+-', x3, y3, 'b^-')
+
+
+# 柱状图
+# width = 0.1
+# plt.bar(byte1, speed1, width, color='orange')
+
+# 扇形图
+# data = [50, 10, 10]
+# labels = ['apple', 'pear', 'orange']
+# plt.pie(data, labels=labels, autopct='%1.2f%%')
+
+
+关于浅拷贝和深拷贝：
+-----------------
+https://blog.csdn.net/weixin_44870139/article/details/108273106
+
+
+gunicorn
+----------
+https://www.jianshu.com/p/69e75fc3e08e
+Gunicorn是一个unix上被广泛使用的高性能的Python WSGI UNIX HTTP Server。
+和大多数的web框架兼容，并具有实现简单，轻量级，高性能等特点。
+
+gunicorn + flask：
+
+pip install gunicorn
+pip install flask
+
+
+flask简介：
+https://www.jianshu.com/p/6452596c4edb

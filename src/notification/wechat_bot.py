@@ -8,35 +8,35 @@ class WechatBot:
         pass
 
     def send_text(self, description):
-        request = {
+        data = {
             "msgtype": "text",
             "text": {
                 "content": description
             }
         }
-        self.__send_msm(request)
+        self.__send_msm(data)
 
     def send_markdown(self, description):
-        request = {
+        data = {
             "msgtype": "markdown",
             "markdown": {
                 "content": description
             }
         }
-        self.__send_msm(request)
+        self.__send_msm(data)
 
     def send_picture(self, picbase64, picmd5):
-        request = {
+        data = {
             "msgtype": "image",
             "image": {
                 "base64": picbase64,
                 "md5": picmd5
             }
         }
-        self.__send_msm(request)
+        self.__send_msm(data)
 
     def send_pic_text(self, title, description, url, picurl):
-        request = {
+        data = {
             "msgtype": "news",
             "news": {
                 "articles": [{
@@ -47,13 +47,13 @@ class WechatBot:
                 }]
             }
         }
-        self.__send_msm(request)
+        self.__send_msm(data)
 
-    def __send_msm(self, request):
+    def __send_msm(self, data):
         header = {
             'Content-Type': 'application/json'
         }
-        Https.send_post_data(self.wechat_url, '', request, header)
+        Https.post(self.wechat_url, '', data, header)
 
 
 if __name__ == '__main__':
