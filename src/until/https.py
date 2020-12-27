@@ -4,6 +4,7 @@ import os
 from requests_toolbelt import MultipartEncoder
 from src.util.logger import Logger
 from src.util.timer import Timer
+
 log = Logger()
 
 
@@ -74,16 +75,20 @@ class Https:
                                               timeout=Https.request_timeout, **kwargs)
                         # str,'<?xml?>' str
                         elif content_type.find('text/xml') > -1:
-                            r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout,
+                                              **kwargs)
                         # dict,list
                         elif content_type.find('application/json') > -1:
-                            r = requests.post(url_api, json=data, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, json=data, headers=header, timeout=Https.request_timeout,
+                                              **kwargs)
                         # dict,files={'file':open('test.xls','rb')}
                         elif content_type.find('binary') > -1:
-                            r = requests.post(url_api, files=data, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, files=data, headers=header, timeout=Https.request_timeout,
+                                              **kwargs)
                         # dict,默认application/x-www-form-urlencoded
                         else:
-                            r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout, **kwargs)
+                            r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout,
+                                              **kwargs)
                     else:
                         # dict,
                         r = requests.post(url_api, data=data, headers=header, timeout=Https.request_timeout, **kwargs)
@@ -107,11 +112,13 @@ class Https:
                         result_json = None
                         log.info('json转化异常:{0}'.format(e))
                     if result_json is not None:
-                        result_text = json.dumps(result_json, indent='\t')
-                        log.info('响应内容为json:\n{0}'.format(result_text if result_text.__len__() < 1000 else result_text[0:1000]))
+                        result_text = json.dumps(result_json, indent='\t', ensure_ascii=False)
+                        log.info('响应内容为json:\n{0}'.format(
+                            result_text if result_text.__len__() < 1000 else result_text[0:1000]))
                     else:
                         json_text = str(r.text)
-                        log.info('响应内容非json:\n{0}'.format(json_text if json_text.__len__() < 1000 else json_text[0:1000]))
+                        log.info(
+                            '响应内容非json:\n{0}'.format(json_text if json_text.__len__() < 1000 else json_text[0:1000]))
             r.raise_for_status()
         except requests.exceptions.Timeout as e:
             log.error('请求超时:{0}秒'.format(Https.request_timeout))
@@ -139,7 +146,7 @@ class Https:
 
     @staticmethod
     def download(url: str, save_path: str):
-        file_path = save_path + '/' + url[url.rindex('/')+1:][-20:]
+        file_path = save_path + '/' + url[url.rindex('/') + 1:][-20:]
         if os.path.isdir(save_path):
             pass
         elif os.path.isfile(save_path):

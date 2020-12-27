@@ -1,11 +1,12 @@
 import datetime
 import time
+import os
 
 
 class Timer:
 
     @staticmethod
-    def get_time(second=True):
+    def get_stamp_now(second=True):
         """
         返回当前时间戳,second=True返回秒时间戳10位,second=False返回毫秒时间戳13位
         :return:
@@ -34,7 +35,7 @@ class Timer:
     @staticmethod
     def get_time_for_date():
         """
-        生成日期
+        生成日期 2020-12-17
         :return:
         """
         return datetime.datetime.now().strftime('%Y-%m-%d')
@@ -42,7 +43,7 @@ class Timer:
     @staticmethod
     def get_time_for_mouth_date():
         """
-        生成日期
+        生成日期 12月5日
         :return:
         """
         return datetime.datetime.now().strftime('%m月%d日')
@@ -50,58 +51,59 @@ class Timer:
     @staticmethod
     def get_time_for_date_and_time():
         """
-        生成日期
+        生成日期 2020-12-17 12:30:04
         :return:
         """
         return datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     @staticmethod
-    def get_time_for_date_by_cus(strftime):
+    def get_time_for_date_by_format(string_format: str):
         """
-        生成日期 ps:'%Y-%m-%d %H:%M:%S'
+        生成日期 by 格式:
+        :param string_format: '%Y-%m-%d %H:%M:%S.%f'
         :return:
         """
-        return datetime.datetime.now().strftime(strftime)
+        return datetime.datetime.now().strftime(string_format)
 
     @staticmethod
-    def get_time_by_timestamp_and_cus(strftime, time: int):
+    def get_time_by_timestamp_and_format(stamp: float, string_format):
         """
-        返回,ps:%Y-%m-%d %H:%M:%S
-        :param strftime:
-        :param time:时间戳
+        生成时间，通过时间戳和格式
+        :param stamp: 时间戳，float
+        :param string_format: %Y-%m-%d %H:%M:%S
         :return:
         """
-        return datetime.datetime.fromtimestamp(time).strftime(strftime)
+        return datetime.datetime.fromtimestamp(stamp).strftime(string_format)
 
     @staticmethod
-    def get_time_by_timestamp(time: int):
+    def get_time_by_timestamp(stamp: float):
         """
-        返回%Y-%m-%d %H:%M:%S
-        :param time:
+        通过时间戳生成时间
+        :param stamp: 时间戳
+        :return: %Y-%m-%d %H:%M:%S
+        """
+        return datetime.datetime.fromtimestamp(stamp).strftime('%Y-%m-%d %H:%M:%S')
+
+    @staticmethod
+    def get_stamp_by_str_and_format(time_string: str, string_format):
+        """
+        返回时间戳, 通过时间字符串和格式化字符串
+        :param time_string: '2020-12-17 12:30:04.659883'
+        :param string_format: '%Y-%m-%d %H:%M:%S.%f'
         :return:
         """
-        return datetime.datetime.fromtimestamp(time).strftime('%Y-%m-%d %H:%M:%S')
+        return datetime.datetime.strptime(time_string, string_format).timestamp()
 
     @staticmethod
-    def get_time_by_date_and_cus(strftime, time: str):
-        """
-        返回时间戳
-        :param time: str
-        :param strftime:
-        :return:
-        """
-        return datetime.datetime.strptime(time, strftime).timestamp()
-
-    @staticmethod
-    def get_time_interval(startime: int, endtime: int):
+    def get_time_interval(star_time: float, end_time: float):
         """
         计算时间差,返回X天X小时X分X秒
-        :param startime:
-        :param endtime:
+        :param star_time:
+        :param end_time:
         :return:
         """
         use_time = ''
-        diff = endtime - startime
+        diff = end_time - star_time
         if diff < 0:
             return '时间不正确'
         days = int(diff / (60 * 60 * 24))
@@ -121,9 +123,9 @@ class Timer:
     @staticmethod
     def get_days_interval(date1, date2):
         """
-        返回两个时间的相差天数
-        :param date1:
-        :param date2:
+        返回两个时间的相差天数, date2 > date1
+        :param date1: 2020-12-17
+        :param date2: 2020-12-20
         :return:
         """
         # %Y-%m-%d为日期格式，其中的-可以用其他代替或者不写，但是要统一，同理后面的时分秒也一样；可以只计算日期，不计算时间。
@@ -147,6 +149,20 @@ class Timer:
         """
         return int(time.strftime('%H', time.localtime(time.time())))
 
+    @staticmethod
+    def get_file_modified_time(filepath: str):
+        """
+        返回文件修改时间，
+        """
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.stat(filepath).st_mtime))
+
+    @staticmethod
+    def get_file_created_time(filepath: str):
+        """
+        返回文件创建时间，适用于windows
+        """
+        return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.stat(filepath).st_ctime))
+
 
 def is_date(string):
     """
@@ -157,5 +173,10 @@ def is_date(string):
     try:
         time.strptime(string, "%Y-%m-%d")
         return True
-    except:
+    except Exception as e:
         return False
+
+
+if __name__ == '__main__':
+    print(time.time())
+

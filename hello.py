@@ -1637,6 +1637,8 @@ https://blog.csdn.net/jenyzhang/article/details/52046372
 
 https://www.cnblogs.com/onemorepoint/p/7482644.html
 
+https://blog.csdn.net/qq_34859482/article/details/80617391
+
 绘制折线统计图的时候：
 marker关键字参数可以和color以及linestyle这两个关键字参数合并为一个字符串
 
@@ -1713,6 +1715,11 @@ plt.savefig("sinx.jpg")
 # labels = ['apple', 'pear', 'orange']
 # plt.pie(data, labels=labels, autopct='%1.2f%%')
 
+numpy, pandas
+------------
+https://blog.csdn.net/cxmscb/article/details/54583415
+
+
 
 关于浅拷贝和深拷贝：
 -----------------
@@ -1733,3 +1740,148 @@ pip install flask
 
 flask简介：
 https://www.jianshu.com/p/6452596c4edb
+
+
+json.dumps()的坑
+----------------
+https://www.cnblogs.com/stubborn412/p/3818423.html
+print(json.dumps(result, indent='\t', ensure_ascii=False))
+
+
+python字符串补0方式：
+---------------------
+https://blog.csdn.net/weixin_42317507/article/details/93411132
+https://zhidao.baidu.com/question/144464742.html
+'''
+原字符串左侧对齐， 右侧补零:
+'''
+str.ljust(width,'0') 
+input: '789'.ljust(32,'0')
+output: '78900000000000000000000000000000'
+
+
+'''
+原字符串右侧对齐， 左侧补零:
+方法一：
+'''
+str.rjust(width,'0') 
+input: '798'.rjust(32,'0')
+output: '00000000000000000000000000000798'
+'''
+方法二：
+'''
+str.zfill(width)
+input: '123'.zfill(32)
+output:'00000000000000000000000000000123'
+'''
+方法三：
+'''
+'%07d' % n
+input: '%032d' % 89
+output:'00000000000000000000000000000089'
+
+>>> '%03x' % 17
+'011'
+>>> '%03o' % 17
+'021'
+
+>>> '%03x' % 123
+'07b'
+>>> '%03X' % 123
+'07B'
+
+>>> '%0.3f' % 3.1215936
+'3.122'
+>>> '%07.4f' % 3.12159365458
+'03.1216'
+
+
+>>> '%03d' % 12.35364364
+'012'
+>>> '%3d' % 12.35364364
+' 12'
+
+>>> '%03f' % 3.12159365458
+'3.121594'
+>>> '%3f' % 3.1215936
+'3.121594'
+>>> '%4f' % 12.35364364
+'12.353644'
+>>> '%10f' % 12.35364364
+' 12.353644'
+>>> '%010f' % 12.35364364
+'012.353644'
+>>> '%012f' % 12.35364364
+'00012.353644'
+
+>>> '%-12f' % 12.35364364
+'12.353644   '
+>>> '%-012f' % 12.35364364
+'12.353644   '
+>>> '%+012f' % 12.35364364
+'+0012.353644'
+
+'''
+type意义
+d 有符号10进制整数
+i 有符号10进制整数
+o 无符号8进制整数
+u 无符号10进制整数
+x 无符号的16进制数字，并以小写abcdef表示
+X 无符号的16进制数字，并以大写ABCDEF表示
+F/f 浮点数
+E/e 用科学表示格式的浮点数
+g 使用%f和%e表示中的总的位数表示最短的来表示浮点数 G 同g格式，但表示为指数
+c 单个字符
+s 字符串
+% 显示百分号本身
+
+flag格式：
+无 右对齐，左边填充0和空格
+- 左对齐，右边填充空格
++ 在数字前增加符号 + 或 -
+0 将输出的前面补上0，直到占满指定列宽为止（不可以搭配使用-）
+'''
+
+>>> round(12.12345678, 8)
+12.12345678
+>>> round(12.12345678900, 8)
+12.12345679
+>>> round(12.12345678900, 10)
+12.123456789
+
+
+format用法详解：
+-------------
+https://segmentfault.com/a/1190000037571463
+
+
+>>> '{:-^10}'.format('haha')
+'---haha---'
+>>> f"{'你说呢':-^20}"
+'--------你说呢---------'
+
+
+格式化打印
+----------
+https://www.cnblogs.com/lowmanisbusy/p/12683897.html
+
+# 方式1
+import pprint
+# indent：定义几个空格的缩进
+pp = pprint.PrettyPrinter(indent=2)
+info = dict(age=50, money=0, a=1, b=dict(h=7, i=8, j=9), c=2, d=3, e=4, f=5, g=6)
+pp.pprint(info)
+
+# 方式2
+import json
+info = dict(age=50, money=0, a=1, b=dict(h=7, i=8, j=9), c=2, d=3, e=4, f=5, g=6)
+# indent：定义几个空格的缩进
+# separators：定义 "," ":" 前后的空格数量
+print(json.dumps(info, indent=1, separators=(', ', ': '), ensure_ascii=False))
+
+
+
+python copy和deepcopy
+---------------------
+import copy
