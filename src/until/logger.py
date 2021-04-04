@@ -51,3 +51,4 @@ if __name__ == '__main__':
     log2 = Logger()
     log3 = Logger()
     print(id(log1) == id(log2) == id(log3))
+    log1.info('testlog')

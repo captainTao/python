@@ -1719,6 +1719,12 @@ numpy, pandas
 ------------
 https://blog.csdn.net/cxmscb/article/details/54583415
 
+import pandas as pd
+
+dt = pd.read_csv('you_csv.csv')
+print(max(dt['dates']))
+print(min(dt['dates']))
+
 
 
 关于浅拷贝和深拷贝：
@@ -1882,6 +1888,308 @@ print(json.dumps(info, indent=1, separators=(', ', ': '), ensure_ascii=False))
 
 
 
-python copy和deepcopy
+copy和deepcopy
 ---------------------
 import copy
+
+copy.deepcopy
+
+
+csv
+
+import csv
+with open(file_path) as csv_file:
+    reader = csv.reader(csv_file) #读出来是个每行数据组成的list
+    item_list = [{'url': row[0], 'sign':row[1]} for row in reader]
+
+    #读取某一行
+    for i, j in enumerate(reader) #i是list reader的每个元素的index, j是list中没个元素的值
+
+
+with open(file_path) as csv_file:
+    reader = csv.DictReader(csv_file) #读出来是每一行为字典，key为每列的头
+
+    for i in csv_file: #如果不用reader去读，那么没一行是str类型
+
+
+
+def analyse_data(file_path):
+    if not os.path.exists(file_path):
+        log.error(f'[file: {file_path}]不存在！')
+        return
+    item_list = []
+    if file_path.endswith('.csv'):
+        with open(file_path) as csv_file:
+            reader = csv.reader(csv_file)
+            item_list = [{'url': row[0], 'sign':row[1]} for row in reader]
+    else:
+        item = {}
+        file_lines = linecache.getlines(file_path)
+        for single_line in file_lines:
+            if single_line.strip() == "":
+                continue
+            # ...
+
+
+def get_data(folder_path, pretty=False):
+    if not (os.path.exists(folder_path) and os.path.isdir(folder_path)):
+        log.error(f'[folder: {folder_path}] is not exist or is not a folder!')
+        return
+    output1, output2, output3 = [], [], []
+    files = os.popen('ls {}'.format(folder_path)).read().split('\n')[:-1]
+    for filename in files:
+        modified_time = time.strftime('%Y-%m-%d %H:%M:%S',
+                                      time.localtime(os.stat(folder_path + "/" + filename).st_mtime))
+        log.info('find file: {}, modified time: {}'.format(filename, modified_time))
+        sheet1, sheet2, sheet3 = analyse_data('{}/{}'.format(folder_path, filename))
+        output1.extend(sheet1.values())
+        output2.extend(sheet2)
+        output3.extend(sheet3)
+    return output1, output2, output3
+
+
+def make_xlsx(filename, data, headers):
+    workbook = xlsxwriter.Workbook("{}.xlsx".format(filename))
+
+    bold = workbook.add_format({'bold': 1})
+    tags = list(string.ascii_letters[26:])
+    column_tags = tags.copy()
+    for t1 in tags:
+        for t2 in tags:
+            column_tags.append(t1 + t2)
+    for i in range(len(headers)):
+        worksheet = 'sheet' + str(i)
+        worksheet = workbook.add_worksheet(worksheet)
+        # 表头
+        headings = headers[i]
+        worksheet.write_row('A1', headings, bold)
+        # 写入数据
+        for column_index in range(len(headers[i])):
+            worksheet.write_column(column_tags[column_index] + "2", data[i][column_index])
+    workbook.close()
+
+
+
+def judge_file_type(name):
+    try:
+        re.match(r'^\w{8}-\w{4}-\w{4}-\w{4}-\w{12}/\w{2}/\w{3}$', name).group()
+    except Exception as e:
+        return 'download'
+    else:
+        return 'upload'
+
+
+
+
+
+locust:
+-----------
+https://docs.locust.io/en/latest/quickstart.html
+https://blog.csdn.net/luoman876/article/details/105652423
+
+#基础：
+https://debugtalk.com/post/head-first-locust-user-guide/
+#参数关联：
+https://debugtalk.com/post/head-first-locust-advanced-script/
+
+疑难杂症：
+在模拟有效并发方面，Locust的优势在于其摒弃了进程和线程，完全基于事件驱动，
+使用gevent提供的非阻塞IO和coroutine来实现网络层的并发请求，因此即使是单台压力机也能产生数千并发请求数；
+再加上对分布式运行的支持，理论上来说，Locust能在使用较少压力机的前提下支持极高并发数的测试。
+
+'''
+
+1.定义task权重的两种方法：
+from locust import TaskSet, task
+
+class UserBehavior(TaskSet):
+    @task(1)
+    def test_job1(self):
+        self.client.get('/job1')
+
+    @task(2)
+    def test_job2(self):
+        self.client.get('/job2')
+        
+---------------------------   
+from locust import TaskSet
+
+def test_job1(obj):
+    obj.client.get('/job1')
+
+def test_job2(obj):
+    obj.client.get('/job2')
+
+class UserBehavior(TaskSet):
+    tasks = {test_job1:1, test_job2:2}
+    # tasks = [(test_job1,1), (test_job1,2)] # 两种方式等价
+'''
+
+from locust import HttpUser, TaskSet, task
+
+
+class WebsiteTasks(TaskSet):
+    def on_start(self):   #初始化，只执行一次，和LR中vuser_init功能相同
+        self.client.post("/login", {
+            "username": "test",
+            "password": "123456"
+        })
+
+    @task(2)
+    def index(self):
+        self.client.get("/")
+
+    @task(1)  #权重不配置的话，默认比例为1：1
+    def about(self):
+        self.client.get("/about/")
+
+    def on_stop(self):
+        pass
+
+class WebsiteUser(HttpUser):
+    tasks = [WebsiteTasks]
+    host = "https://debugtalk.com"
+    min_wait = 1000  #时间不配置的话默认为 1s， 这儿单位为ms
+    max_wait = 5000
+
+
+if __name__ == '__main__':
+    pass
+
+
+https://docs.locust.io/en/latest/changelog.html#changelog-1-0
+no-web改成了headless, -c 换成了-u
+HttpLocust换成了HttpUser
+task_set换成tasks,且接受一个list
+
+locust -f ./load_test.py --host=https://www.baidu.com
+locust -f load_test.py --host=https://www.baidu.com --headless -u 10 -r 2 -t 1m
+
+
+2.我们在Locust处理值关联时，通过官方库函数re.search就能实现所有需求。
+甚至针对html页面，我们也可以采用lxml库，通过etree.HTML(html).xpath来更优雅地实现元素定位。
+
+3.分为 web和no-web模式： --headless
+locust -f locustfile.py --no_web -c 1 -n 1
+
+
+Locust是通过在Terminal中执行命令进行启动的，通用的参数有如下两个：
+
+-H, --host：被测系统的host，若在Terminal中不进行指定，就需要在Locust子类中通过host参数进行指定；
+-f, --locustfile：指定执行的Locust脚本文件；
+
+
+单进程模式：no_web
+
+locust -H https://debugtalk.com -f demo.py --no-web -c1 -n2
+
+如果采用no_web形式，则需使用--no-web参数，并会用到如下几个参数。
+
+-c, --clients：指定并发用户数；
+-n, --num-request：指定总执行测试；
+-r, --hatch-rate：指定并发加压速率，默认值位1。
+
+
+
+web模式：
+locust -H https://debugtalk.com -f demo.py
+-P, --port：指定web端口，默认为8089
+
+
+多进程分布式运行：
+单机多进程/多机负载
+locust -H https://debugtalk.com -f demo.py --master --port=8088
+locust -H https://debugtalk.com -f demo.py --slave
+locust -H https://debugtalk.com -f demo.py --slave --master-host=<locust_machine_ip>   #如果不在同一台主机上，那么需要指定ip
+
+
+4.响应指标：
+相比于LoadRunner，Locust的结果展示十分简单，主要就四个指标：并发数、RPS、响应时间、异常率。
+
+
+
+用go_lang来编写压测工具
+---------------------
+https://myzhan.github.io/
+
+
+
+
+nonlocal的作用域
+---------------
+https://www.cnblogs.com/tallme/p/11300822.html
+
+
+闭包：
+# 利用闭包返回一个计数器函数，每次调用它返回递增整数：
+def createCounter():
+    x =0
+    def counter():
+        nonlocal x
+        x = x+1
+        return x
+    return counter
+# 测试:
+counterA = createCounter()
+print(counterA(), counterA(), counterA(), counterA(), counterA()) # 1 2 3 4 5
+counterB = createCounter()
+if [counterB(), counterB(), counterB(), counterB()] == [1, 2, 3, 4]:
+    print('测试通过!')
+else:
+    print('测试失败!')
+
+
+
+callable
+---------
+https://zhuanlan.zhihu.com/p/191419441
+
+>>> callable(int)
+True
+
+# python中的方法，函数，类都是可以回调的
+
+class Stu(object):
+
+    def __init__(self, name):
+        self.name = name
+
+    def __call__(self, *args, **kwargs):
+        self.run()
+
+    def run(self):
+        print('{name} is running'.format(name=self.name))
+
+stu = Stu('小明')
+print(callable(stu))    # True
+stu()                   # 小明 is running
+
+
+
+from random import randint
+print(randint(1,3))
+
+
+
+# 最值得学习的python库
+# ------------------
+# http://www.testclass.net/post/2021_python_lib
+jsonschema
+algorithms
+howdoi
+
+
+# 自动修正命令
+pip install thefuck   # 或者brew install thefuck 
+
+
+
+String倒序输出：
+方法一：通过步长
+>>> 'abcdefg'[::-1]
+'gfedcba'
+
+方法二：通过list的reverse()
+>>> s = 'abcdfeghi'
+>>> ''.join(sorted(list(s),reverse=True))
+'ihgfedcba'

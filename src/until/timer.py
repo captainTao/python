@@ -152,7 +152,7 @@ class Timer:
     @staticmethod
     def get_file_modified_time(filepath: str):
         """
-        返回文件修改时间，
+        返回文件修改时间，适用于windows, mac
         """
         return time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(os.stat(filepath).st_mtime))
 
