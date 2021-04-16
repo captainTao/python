@@ -2177,10 +2177,23 @@ print(randint(1,3))
 jsonschema
 algorithms
 howdoi
-
+you-get
 
 # 自动修正命令
 pip install thefuck   # 或者brew install thefuck 
+
+
+you-get
+----------
+https://you-get.org/
+下载油管，b站视频用的
+pip install you-get
+brew install you-get
+
+useage
+you-get -i 'https://www.youtube.com/watch?v=jNQXAC9IVRw'
+you-get https://www.youtube.com/watch\?v\=kA3k8LNHX4Y // 默认下载第一个
+you-get --itag=137 https://www.youtube.com/watch\?v\=fnmldw8HpUU  //下载指定tag
 
 
 
@@ -2193,3 +2206,4 @@ String倒序输出：
 >>> s = 'abcdfeghi'
 >>> ''.join(sorted(list(s),reverse=True))
 'ihgfedcba'
+
