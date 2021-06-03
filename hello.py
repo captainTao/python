@@ -2207,3 +2207,145 @@ String倒序输出：
 >>> ''.join(sorted(list(s),reverse=True))
 'ihgfedcba'
 
+
+
+yaml
+-----------
+pip install pyyaml
+
+
+ddt
+------------
+pip install ddt
+
+
+
+读取excel
+-------------
+pip install openpyxl
+
+
+删除字典key
+------------
+a = {'1': 'yi', '2': '', '3': '', '4': 'si'}
+print(a)
+for i in list(a.keys()):
+    if a[i] == '':
+        del a[i]
+print(a)
+
+
+图像识别
+----------
+'''
+tesseract、tesserocr、pytesseract
+https://towardsdatascience.com/read-text-from-image-with-one-line-of-python-code-c22ede074cac
+https://www.cnblogs.com/zhangxinqi/p/9297292.html
+
+tesseract-ocr语言包：
+https://github.com/tesseract-ocr/tessdata
+
+'''
+#from PIL import Image
+import cv2
+import pytesseract
+def handle_image(image_path):
+    img = cv2.imread(image_path)
+    # print(img.shape)
+    # img_new = Image.open(image_path)
+    return pytesseract.image_to_string(img, lang="eng")
+
+if __name__ == '__main__':
+    text = handle_image("/Users/wht/Desktop/2.jpg")
+    print(text)
+
+
+
+"""
+移出目录下指定类型的文件
+"""
+
+import os, shutil
+
+def removeTypeFile(dir, type):
+    for root, dirs, files in os.walk(dir)
+        '''删除指定类型文件'''
+        for file in files:
+            if file.endswith(type):
+                fileName = os.path.join(root, file)
+                os.remove(fileName)
+                print(f"file: {fileName} has removed")
+        ''' 删除文件夹和里面的内容'''
+        for dir in dirs:
+            folderName = os.path.join(root, dir)
+            shutil.rmtree(folderName)
+            print(f"folder: {folderName} has been removed")
+
+if __name__ == '__main__':
+    removeTypeFile(r"/User/Captain/test", ".lck")
+
+
+
+"""删除目录下的空文件夹"""
+
+import os
+
+def del_empty_folder(path):
+    num = 0 
+    for root, dirs, files in os.walk(path):
+        if not files and not dirs:
+            num += 1
+            os.rmdir(root)
+            print(f"remove the empty folder: {root}")
+    return num
+
+if __name__ == '__main__':
+    root = r"/Users/Captain/Desktop/Test"
+    while True:
+        del_num = del_empty_folder(root)
+        if del_num == 0:
+            break
+
+
+"""ftp download file"""
+from ftplib import FTP
+
+
+def ftp_connect(host, name, psw):
+    ftp = FTP()
+    ftp.connect(host, 21)
+    ftp.login(name, psw)
+    return ftp
+
+
+def list_dirs(ftp, dir):
+    if dir is not None:
+        ftp.cwd(dir)
+        return ftp.nlst()
+
+
+def handle_file(ftp, dirs):
+    valid_dirs = list(filter(lambda i: i.__contains__("-"), dirs))
+    folder_num = list(map(lambda x: int("".join(x.split("-"))), valid_dirs))
+    print(folder_num)
+    return valid_dirs[-1]
+
+
+def download_file(ftp: FTP, remote_path, local_path):
+    buf_size = 1024
+    fp = open(local_path, 'wb')
+    ftp.retrbinary('RETR ' + remote_path, fp.write, buf_size)
+    ftp.set_debuglevel(0)
+    fp.close()
+
+
+def upload_file(ftp: FTP, remote_path, local_path):
+    buf_size = 1024
+    fp = open(local_path, 'rb')
+    ftp.storbinary('STOR ' + remote_path, fp, buf_size)
+    ftp.set_debuglevel(0)
+    fp.close()
+
+
+if __name__ == '__main__':
+    pass

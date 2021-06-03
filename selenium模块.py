@@ -64,6 +64,13 @@ dr.find_element_by_name("wd")
 通过class name定位:
 dr.find_element_by_class_name("s_ipt")
 
+有多个class_name的时候如何定位：
+https://blog.csdn.net/cyjs1988/article/details/75006167
+
+dr.find_elements((By.CSS_SELECTOR, "[class='result-op c-container new-pmd xpath-log']"))
+dr.find_elements((By.CSS_SELECTOR, ".result-op.c-container.new-pmd.xpath-log"))
+dr.find_elements((By.XPATH, '//*[@class="result-op c-container new-pmd xpath-log"]'))
+
 通过tag name定位:
 dr.find_element_by_tag_name("input")
 
