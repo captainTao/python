@@ -1,3 +1,11 @@
+# !/usr/bin/env python
+# encoding: utf-8
+"""
+ @author: captain
+ @file: logger.py
+ @time: 2022/4/14
+ @desc: 帮助类,提供各种常用方法
+ """
 import subprocess
 import re
 import os
@@ -10,10 +18,6 @@ import zipfile
 
 
 class Helper:
-    """
-    帮助类,提供各种常用方法
-    """
-
     @staticmethod
     def json_format(obj, by_indent='\t'):
         """
@@ -59,9 +63,9 @@ class Helper:
         :return: [(key,value),(key,value)]
         """
         keys = data.keys()
-        vals = data.values()
-        list = [(key, val) for key, val in zip(keys, vals)]
-        return list
+        values = data.values()
+        dict_list = [(key, val) for key, val in zip(keys, values)]
+        return dict_list
 
     @staticmethod
     def list2dict(data: list):
@@ -70,10 +74,10 @@ class Helper:
         :param data:
         :return:
         """
-        dict = {}
+        d = {}
         for tup in data:
-            dict[tup[0]] = tup[1]
-        return dict
+            d[tup[0]] = tup[1]
+        return d
 
     @staticmethod
     def execute(cmd, cwd=None, env=None):
@@ -85,6 +89,7 @@ class Helper:
         :return:
         """
         global output, stdout, stderr
+        # noinspection PyBroadException
         try:
             output = subprocess.Popen(cmd, shell=True, cwd=cwd, env=env, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             stdout, stderr = output.communicate()
@@ -222,9 +227,9 @@ class Helper:
         :return:
         """
         f = zipfile.ZipFile(output_path + '/' + output_name, 'w', zipfile.ZIP_DEFLATED)
-        filelists = []
-        Helper.__get_zip_file(input_path, filelists)
-        for file in filelists:
+        file_list = []
+        Helper.__get_zip_file(input_path, file_list)
+        for file in file_list:
             f.write(file)
         # 调用了close方法才会保证完成压缩
         f.close()

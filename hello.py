@@ -59,12 +59,17 @@ re.search(pattern, string, flags)  #返回值：如果查找到则返回查找�
 
 # -*- re.compile -*-
 # ------------------
+# https://blog.csdn.net/HHG20171226/article/details/101643325?spm=1001.2101.3001.6650.1&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-101643325-blog-122220462.pc_relevant_default&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-101643325-blog-122220462.pc_relevant_default&utm_relevant_index=2
 import re
 content='Where are you from? You look so hansome.'
 regex=re.compile(r'\w*som\w*')
 m=regex.search(content)
 if m:
-    print (m.group(0))  #中间的0的意义没懂？ https://blog.csdn.net/Winterto1990/article/details/47361955
+    print (m.group(0))
+    """
+    #中间的0的意义没懂？ #取一个数值，groups()取出所有数据，group可以取单个数据。
+    https://blog.csdn.net/Winterto1990/article/details/47361955
+    """ 
 else:
     print ("Not found")
 
@@ -2374,3 +2379,16 @@ def upload_file(ftp: FTP, remote_path, local_path):
 
 if __name__ == '__main__':
     pass
+
+
+入参格式限定
+----------------
+https://blog.csdn.net/u014651560/article/details/118542887
+方法一：
+def mytest(a:str or int) ->str or int:
+    return a*2
+
+方法二：
+from typing import Union
+def mytest(a:Union[str,int]=3) ->Union[str,int]:
+    return a*2
