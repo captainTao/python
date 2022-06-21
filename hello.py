@@ -69,7 +69,7 @@ if m:
     """
     #中间的0的意义没懂？ #取一个数值，groups()取出所有数据，group可以取单个数据。
     https://blog.csdn.net/Winterto1990/article/details/47361955
-    """ 
+    """
 else:
     print ("Not found")
 
@@ -83,6 +83,19 @@ span() 返回一个元组包含匹配 (开始,结束) 的位置
 
 '''
 
+regex = re.compile('^(\w+) (\w+)$')
+r2 = regex.findall('hello world')
+print(r2)  # [('hello', 'world')]
+
+regex = re.compile('^(\w+) (\w+)$')
+d3 = regex.search('hello world')
+r3 = d3.group(0)  # 输出匹配的字符
+print(r3)  # hello world
+
+regex = re.compile('^(\w+) (\w+)$')
+d4 = regex.match('hello world')
+r4 = d4.groups()  # 输出匹配的字符
+print(r4)  # ('hello', 'world')
 
 
 # -*- requests -*-
@@ -121,7 +134,7 @@ try:
     r.encoding=r.apparent_encoding #配置编码
     return r.text
 except:
-    return "产生异常" 
+    return "产生异常"
 
 
 method: “GET”、”HEAD”、”POST”、”PUT”、”PATCH”等等
@@ -153,31 +166,31 @@ params: 翻译过来就是参数， url中的额外参数，字典或者字节�
 **kwargs有以下的参数，对于requests.get,其第一个参数被提出来了。
 
 1. params：字典或字节序列， 作为参数增加到url中,使用这个参数可以把一些键值对以?key1=value1&key2=value2的模式增加到url中
- 
 
-例如：kv = {'key1':' values', 'key2': 'values'} 
+
+例如：kv = {'key1':' values', 'key2': 'values'}
 r = requests.get('http:www.python123.io/ws', params=kw)
 
 2. data：字典，字节序或文件对象，重点作为向服务器提供或提交资源是提交，，作为request的内容，与params不同的是，data提交的数据并不放在url链接里， 而是放在url链接对应位置的地方作为数据来存储。，它也可以接受一个字符串对象。
 
 3. json：json格式的数据， json合适在相关的html，http相关的web开发中非常常见， 也是http最经常使用的数据格式， 他是作为内容部分可以向服务器提交。
- 
 
-例如：kv = {'key1': 'value1'} 
+
+例如：kv = {'key1': 'value1'}
 r = requests.post('http://python123.io/ws', json=kv)
 
 4. headers：字典是http的相关语，对应了向某个url访问时所发起的http的头i字段， 可以用这个字段来定义http的访问的http头，可以用来模拟任何我们想模拟的浏览器来对url发起访问。
- 
 
-例子： hd = {'user-agent': 'Chrome/10'} 
+
+例子： hd = {'user-agent': 'Chrome/10'}
 r = requests.post('http://python123.io/ws', headers=hd)
 
 5. cookies：字典或CookieJar，指的是从http中解析cookie
 6. auth：元组，用来支持http认证功能
 7. files：字典， 是用来向服务器传输文件时使用的字段。
- 
 
-例子：fs = {'files': open('data.txt', 'rb')} 
+
+例子：fs = {'files': open('data.txt', 'rb')}
 r = requests.post('http://python123.io/ws', files=fs)
 
 8. timeout: 用于设定超时时间， 单位为秒，当发起一个get请求时可以设置一个timeout时间， 如果在timeout时间内请求内容没有返回， 将产生一个timeout的异常。
@@ -202,24 +215,24 @@ a. 向url post一个字典
 >>> r=requests.post("http://httpbin.org/post",data=payload)
 >>> print(r.text)
 {
-  "args": {}, 
-  "data": "", 
-  "files": {}, 
+  "args": {},
+  "data": "",
+  "files": {},
   "form": {
-    "key1": "value1", 
+    "key1": "value1",
     "key2": "value2"
-  }, 
+  },
   "headers": {
-    "Accept": "*/*", 
-    "Accept-Encoding": "gzip, deflate", 
-    "Connection": "close", 
-    "Content-Length": "23", 
-    "Content-Type": "application/x-www-form-urlencoded", 
-    "Host": "httpbin.org", 
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate",
+    "Connection": "close",
+    "Content-Length": "23",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Host": "httpbin.org",
     "User-Agent": "python-requests/2.18.4"
-  }, 
-  "json": null, 
-  "origin": "218.197.153.150", 
+  },
+  "json": null,
+  "origin": "218.197.153.150",
   "url": "http://httpbin.org/post"
 }
 
@@ -227,20 +240,20 @@ b. 向url post 一个字符串，自动编码为data
 >>>r=requests.post("http://httpbin.org/post",data='helloworld')
 >>>print(r.text)
 {
-  "args": {}, 
-  "data": "helloworld", 
-  "files": {}, 
-  "form": {}, 
+  "args": {},
+  "data": "helloworld",
+  "files": {},
+  "form": {},
   "headers": {
-    "Accept": "*/*", 
-    "Accept-Encoding": "gzip, deflate", 
-    "Connection": "close", 
-    "Content-Length": "10", 
-    "Host": "httpbin.org", 
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate",
+    "Connection": "close",
+    "Content-Length": "10",
+    "Host": "httpbin.org",
     "User-Agent": "python-requests/2.18.4"
-  }, 
-  "json": null, 
-  "origin": "218.197.153.150", 
+  },
+  "json": null,
+  "origin": "218.197.153.150",
   "url": "http://httpbin.org/post"
 }
 
@@ -251,14 +264,14 @@ c. 向url post一个文件
 >>> print(r.text)
 {
     "args":{
- 
+
     },
     "data":"",
     "files":{
         "files":"hello worle!"
     },
     "form":{
- 
+
     },
     "headers":{
         "Accept":"*/*",
@@ -280,38 +293,38 @@ c. 向url post一个文件
 >>> r=requests.put("http://httpbin.org/put",data=payload)
 >>> print(r.text)
 {
-  "args": {}, 
-  "data": "", 
-  "files": {}, 
+  "args": {},
+  "data": "",
+  "files": {},
   "form": {
-    "key1": "value1", 
+    "key1": "value1",
     "key2": "value2"
-  }, 
+  },
   "headers": {
-    "Accept": "*/*", 
-    "Accept-Encoding": "gzip, deflate", 
-    "Connection": "close", 
-    "Content-Length": "23", 
-    "Content-Type": "application/x-www-form-urlencoded", 
-    "Host": "httpbin.org", 
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate",
+    "Connection": "close",
+    "Content-Length": "23",
+    "Content-Type": "application/x-www-form-urlencoded",
+    "Host": "httpbin.org",
     "User-Agent": "python-requests/2.18.4"
-  }, 
-  "json": null, 
-  "origin": "218.197.153.150", 
+  },
+  "json": null,
+  "origin": "218.197.153.150",
   "url": "http://httpbin.org/put"
 
 
 5. requests.patch()
 
-requests.patch和request.put类似。 
-两者不同的是： 
-当我们用patch时仅需要提交需要修改的字段。 
-而用put时，必须将20个字段一起提交到url，未提交字段将会被删除。 
+requests.patch和request.put类似。
+两者不同的是：
+当我们用patch时仅需要提交需要修改的字段。
+而用put时，必须将20个字段一起提交到url，未提交字段将会被删除。
 patch的好处是：节省网络带宽。
 
 6. requests.request()
 
-requests.request(）支持其他所有的方法。 
+requests.request(）支持其他所有的方法。
 requests.request(method，url,**kwargs)
 
 '''
@@ -568,7 +581,7 @@ async def async_double(x):
 #异步调用：
 # 要调用异步函数，必须使用await关键字
 async def print_double(x):
-    print(await async_double(x))  
+    print(await async_double(x))
 '''
 https://www.liaoxuefeng.com/wiki/1016959663602400/1017970488768640#0
 https://blog.csdn.net/SL_World/article/details/86597738
@@ -671,8 +684,8 @@ asyncio.as_completed
 
 # 协程中调用协程，在主协程中还是顺序执行的；
 import asyncio
-import time 
- 
+import time
+
 async def main():
     print("主协程")
     print("等待result1协程运行")
@@ -680,17 +693,17 @@ async def main():
     print("等待result2协程运行")
     res2 = await result2(res1)
     return (res1,res2)
- 
+
 async def result1():
     print("这是result1协程")
     await asyncio.sleep(4)
     return "result1"
-  
+
 async def result2(arg):
     print("这是result2协程")
     await asyncio.sleep(2)
     return f"result2接收了一个参数,{arg}"
- 
+
 if __name__ == '__main__':
     start = time.time()
     loop = asyncio.get_event_loop()
@@ -724,7 +737,7 @@ https://www.jianshu.com/p/8ba0c3e2381b
 固定背景，字体大小不确定，然后文字居中：
 ________________________________
 def make_icon(path, name):
-    # name去掉后缀  
+    # name去掉后缀
     icon_name = re.split(r'-|_', name)[0]
     # 先假设取一个值，而得到比例
     font_size = 27
@@ -1177,7 +1190,7 @@ print(len(name.encode('utf-8'))) #6,utf-8是3倍，gbk是2倍
 
 # 查看模块的官方文档地址
 >>> import time
->>> help(time) 
+>>> help(time)
 # 查看py文件存放的本地位置
 >>> import random
 >>> print(random.__file__)
@@ -1353,7 +1366,7 @@ data = json.loads(json_str)
 3. json.dump() 和 json.load() 来编码和解码JSON数据,用于处理文件。
 with open('test.json', 'w') as f:
     json.dump(data, f)
- 
+
 with open('test.json', 'r') as f:
     data = json.load(f)
 
@@ -1485,67 +1498,67 @@ python -> shell：
 # 1.环境变量
 
 import os
-var=123 #或var='123'  
-os.environ['var']=str(var)  #environ的键值必须是字符串   
-os.system('echo $var')  
+var=123 #或var='123'
+os.environ['var']=str(var)  #environ的键值必须是字符串
+os.system('echo $var')
 
 # 2.字符串连接
 
-import os  
+import os
 path='/root/a.txt'
-var=[1]  
-var='bash'  
-os.system('echo ' + path)                  #注意echo后有空格   
-os.system('echo ' + str(var[0]))  
-os.system('echo ' + var + ' /root/c.sh') #注意echo后和/root前有空格    
- 
+var=[1]
+var='bash'
+os.system('echo ' + path)                  #注意echo后有空格
+os.system('echo ' + str(var[0]))
+os.system('echo ' + var + ' /root/c.sh') #注意echo后和/root前有空格
+
 
 # 3.通过管道
-import os  
-var='123'  
-os.popen('wc -c', 'w').write(var)  
- 
+import os
+var='123'
+os.popen('wc -c', 'w').write(var)
+
 
 # 4.通过文件
 
-output = open('/tmp/mytxt', 'w')  
-output.write(S)      #把字符串S写入文件   
-output.writelines(L) #将列表L中所有的行字符串写到文件中   
-output.close()  
+output = open('/tmp/mytxt', 'w')
+output.write(S)      #把字符串S写入文件
+output.writelines(L) #将列表L中所有的行字符串写到文件中
+output.close()
 
 # 5.通过重定向标准备输出
 
-buf = open('/root/a.txt', 'w')  
-print >> buf, '123\n', 'abc'  
+buf = open('/root/a.txt', 'w')
+print >> buf, '123\n', 'abc'
 # 或
 
-print >> open('/root/a.txt', 'w'), '123\n', 'abc' #写入或生成文件   
-print >> open('/root/a.txt', 'a'), '123\n', 'abc' #追加  
- 
+print >> open('/root/a.txt', 'w'), '123\n', 'abc' #写入或生成文件
+print >> open('/root/a.txt', 'a'), '123\n', 'abc' #追加
+
 
 
 shell -> python：
 ----------------
 # 1.管道
 
-import os  
-var=os.popen('echo -n 123').read() 
-print var  
- 
+import os
+var=os.popen('echo -n 123').read()
+print var
+
 # 2.
 
-import commands  
-var=commands.getoutput('echo abc')       #输出结果   
-var=commands.getstatusoutput('echo abc') #退出状态和输出结果  
+import commands
+var=commands.getoutput('echo abc')       #输出结果
+var=commands.getstatusoutput('echo abc') #退出状态和输出结果
 
 # 3.文件
 
-input = open('/tmp/mytxt', 'r')  
-S = input.read( )      #把整个文件读到一个字符串中   
-S = input.readline( )  #读下一行（越过行结束标志）   
-L = input.readlines( ) #读取整个文件到一个行字符串的列表中  
+input = open('/tmp/mytxt', 'r')
+S = input.read( )      #把整个文件读到一个字符串中
+S = input.readline( )  #读下一行（越过行结束标志）
+L = input.readlines( ) #读取整个文件到一个行字符串的列表中
 
-input = open('/tmp/mytxt', 'r')  
+input = open('/tmp/mytxt', 'r')
 # 本文转载自：https://blog.csdn.net/blackmanren/article/details/12904603
 
 
@@ -1682,15 +1695,15 @@ sudo apt-get install python-matplotlib
 #绘制sin曲线
 import numpy as np
 import matplotlib.pyplot as plt
- 
+
 #设置x,y轴的数值（y=sinx）
 x = np.linspace(0, 10, 1000)
 y1 = np.sin(x)
 y2 = np.cos(x)
- 
+
 #创建绘图对象，figsize参数可以指定绘图对象的宽度和高度，单位为英寸，一英寸=80px
 plt.figure(figsize=(8,4))
- 
+
 #在当前绘图对象中画图（x轴,y轴,给所绘制的曲线的名字，画线颜色，画线宽度）
 plt.plot(x,y1,label="$sin(x)$",color="green",linewidth=2)
 plt.plot(x,y2,label="$cos(x)$",color="blue",linewidth=2)
@@ -1701,10 +1714,10 @@ plt.xlabel("Time(s)")
 plt.ylabel("Volt")
 #图表的标题
 plt.title("PyPlot First Example")
- 
+
 #Y轴的范围
 plt.ylim(-1.2,1.2)
- 
+
 #显示图示
 plt.legend()
 #显示图
@@ -1791,7 +1804,7 @@ https://zhidao.baidu.com/question/144464742.html
 '''
 原字符串左侧对齐， 右侧补零:
 '''
-str.ljust(width,'0') 
+str.ljust(width,'0')
 input: '789'.ljust(32,'0')
 output: '78900000000000000000000000000000'
 
@@ -1800,7 +1813,7 @@ output: '78900000000000000000000000000000'
 原字符串右侧对齐， 左侧补零:
 方法一：
 '''
-str.rjust(width,'0') 
+str.rjust(width,'0')
 input: '798'.rjust(32,'0')
 output: '00000000000000000000000000000798'
 '''
@@ -2040,8 +2053,8 @@ class UserBehavior(TaskSet):
     @task(2)
     def test_job2(self):
         self.client.get('/job2')
-        
----------------------------   
+
+---------------------------
 from locust import TaskSet
 
 def test_job1(obj):
@@ -2210,7 +2223,7 @@ howdoi
 you-get
 
 # 自动修正命令
-pip install thefuck   # 或者brew install thefuck 
+pip install thefuck   # 或者brew install thefuck
 
 
 you-get
@@ -2321,7 +2334,7 @@ if __name__ == '__main__':
 import os
 
 def del_empty_folder(path):
-    num = 0 
+    num = 0
     for root, dirs, files in os.walk(path):
         if not files and not dirs:
             num += 1
@@ -2392,3 +2405,45 @@ def mytest(a:str or int) ->str or int:
 from typing import Union
 def mytest(a:Union[str,int]=3) ->Union[str,int]:
     return a*2
+
+
+
+try except报 Too broad exception clause
+--------------------------------
+# 解决办法：try上面注释
+
+#noinspection PyBroadException
+try:
+    .....
+except Exception as e:
+    log.info(f"error")
+else:
+    print(....)
+finally:
+    .......
+
+
+pytest setup teardown
+----------------------
+# https://blog.csdn.net/anndy_/article/details/119885380
+# https://blog.csdn.net/anndy_/article/details/119865739
+
+
+正则表达式.*?
+------------
+# 贪婪匹配和非贪婪匹配
+'''
+.*？ 表示匹配任意字符到下一个符合条件的字符
+例子：正则表达式a.*?bbb 可以匹配 acbbb abbbbb accccccccbbb
+
+*匹配0或多个正好在它之前的那个字符。例如正则表达式。*意味着能够匹配任意数量的任何字符。?匹配0或1个正好在它之前的那个字符。注意：这个元字符不是所有的软件都支持的。.*是指任何字符0个或多个，.?是指任何字符0个或1个。
+
+.是任意字符 可以匹配任何单个字符。
+例子：正则表达式c.r 可以匹配这些字符串：car、cur、c r，但是不匹配root。
+
+.* 具有贪婪的性质，首先匹配到不能匹配为止，根据后面的正则表达式，会进行回溯。.*？则相反，一个匹配以后，就往下进行，所以不会进行回溯，具有最小匹配的性质。
+？表示非贪婪模式，即为匹配最近字符 如果不加?就是贪婪模式a.*bc 可以匹配 abcbcbc 。
+————————————————
+原文链接：https://blog.csdn.net/huang__2/article/details/103781716
+
+'''
