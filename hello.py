@@ -88,6 +88,7 @@ span() 返回一个元组包含匹配 (开始,结束) 的位置
 # -*- requests -*-
 # ------------------
 # https://blog.csdn.net/pittpakk/article/details/81218566
+# https://zhuanlan.zhihu.com/p/250276145
 response = requests.post(CMS_URL+SUBMIT_URL, data=pay_load, cookies=CMS_COOKIES)
 response.raise_for_status()  #re的状态，正常的话返回none，否则抛异常
 print (response.text)
@@ -127,6 +128,17 @@ except:
 method: “GET”、”HEAD”、”POST”、”PUT”、”PATCH”等等
 url: 请求的网址
 **kwargs: 控制访问的参数
+
+
+requests禁用掉警告
+----------------------
+import requests
+resp = requests.get('https://httpbin.org/get', verify=False)
+但是关闭验证后，会有一个比较烦人的 warning，可以使用以下方法关闭警告：
+
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+# 禁用安全请求警告
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
 
 
 Form Data 和 Request Payload 区别:
@@ -2392,3 +2404,44 @@ def mytest(a:str or int) ->str or int:
 from typing import Union
 def mytest(a:Union[str,int]=3) ->Union[str,int]:
     return a*2
+
+
+禁用request https无证书安全警告
+-----------------------------
+https://zhuanlan.zhihu.com/p/250276145
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+# 禁用安全请求警告
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+
+request带session请求
+-------------------
+https://zhuanlan.zhihu.com/p/250276145
+'''
+在 Requests 中，实现了 Session(会话) 功能，当我们使用 Session 时，能够像浏览器一样，在没有关闭关闭浏览器时，能够保持住访问的状态。
+这个功能常常被我们用于登陆之后的数据获取，使我们不用再一次又一次的传递 cookies。
+首先我们需要去生成一个 Session 对象，然后用这个 Session 对象来发起访问，发起访问的方法与正常的请求是一摸一样的。
+'''
+
+import requests
+session = requests.Session()
+session.get('http://httpbin.org/cookies/set/sessioncookie/123456789')
+resp = session.get('http://httpbin.org/cookies')
+print(resp.text)
+
+# {
+# "cookies": {
+# "sessioncookie": "123456789"
+# }
+# }
+
+'''
+同时，需要注意的是，如果是我们在 get() 方法中传入 headers 和 cookies 等数据，那么这些数据只在当前这一次请求中有效。如果你想要让一个 headers 在 Session 的整个生命周期内都有效的话，需要用以下的方式来进行设置：
+'''
+
+# 设置整个headers
+session.headers = {
+    'user-agent': 'lemonban/0.0.1'
+}
+# 增加一条headers
+session.headers.update({'x-test': 'true'})
