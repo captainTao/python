@@ -85,9 +85,40 @@ python_files = test*.py ;python文件前缀，可自定义
 python_classes = Test* ;指定类名
 python_functions = test* ;指定方法名,可自定义
 
-
-
 标记注册好后，可以通过pytest --markers来查看
+
+
+
+pytest.ini
+-------------
+[pytest]
+
+minversion = 5.0
+
+markers =
+    slow: marks tests as slow (deselect with '-m "not slow"', or, not, and expression supported)
+    smoke: Run the smoke test functions for tasks project
+    critical: mark cases as critical
+    failed: mark cases failed
+    success: mark cases success
+    serial
+    uat: uat cases
+    system: system test cases
+
+
+addopts = -vv --strict-markers -s
+testpaths = ./python
+python_files = test*.py
+python_classes = Test*
+python_functions = test*
+
+log_cli = 1
+log_cli_level = INFO
+
+filterwarnings =
+    ignore::urllib3.exceptions.InsecureRequestWarning
+    ignore::DeprecationWarning
+
 
 10.pytest输出logging
 
