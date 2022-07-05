@@ -149,9 +149,10 @@ import requests
 resp = requests.get('https://httpbin.org/get', verify=False)
 但是关闭验证后，会有一个比较烦人的 warning，可以使用以下方法关闭警告：
 
-from requests.packages.urllib3.exceptions import InsecureRequestWarning
+from requests.packages.urllib3.exceptions import InsecureRequestWarning  //导入warning
 # 禁用安全请求警告
-requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning) // 放在request上面
+res = requests.request(url=url, method=method, headers=headers, json=body, verify=False, **kwargs)
 
 
 Form Data 和 Request Payload 区别:
@@ -1387,6 +1388,7 @@ with open('test.json', 'r') as f:
 把字符串转为数据结构：
 -------------------
 # https://blog.csdn.net/weixin_33729196/article/details/94672998
+# https://blog.csdn.net/HeatDeath/article/details/79370945
 
 
 # No.1:通过json:
@@ -1400,7 +1402,7 @@ with open('test.json', 'r') as f:
 >>> user_dict = eval(user_info)
 # 局限:存在一些安全性问题
 
-# No.3:通过literal_eval
+# No.3:通过literal_eval(推荐)
 import ast
 message = ast.literal_eval(self.content)
 
@@ -1779,6 +1781,111 @@ import pandas as pd
 dt = pd.read_csv('you_csv.csv')
 print(max(dt['dates']))
 print(min(dt['dates']))
+
+
+
+pandas
+--------------
+
+
+pandas判断值是否是nan:
+------------------------
+# https://www.yht7.com/news/137350
+import pandas as pd
+import numpy as np 
+na=np.nan 
+# 可以用来判断空值的方式
+pd.isnull(na) # True
+pd.isna(na) # True
+np.isnan(na) # True
+na is np.nan # True
+na in [np.nan] # True 
+ 
+# 不可以直接用来判断的方式，即以下结果和我们预期不一样
+na == np.nan # False
+bool(na) # True
+if na:
+  print("na is not null") # Output: na is not null 
+ 
+# 不可以直接用python内置函数any和all
+any([na]) # True
+all([na]) #True
+
+
+
+mydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},
+          {'a': 100, 'b': 200, 'c': 300, 'd': 400},
+          {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000}]
+df = pd.DataFrame(mydict)
+print(df)
+
+      a     b     c     d
+0     1     2     3     4
+1   100   200   300   400
+2  1000  2000  3000  4000
+
+
+loc,和iloc使用的方法一样，loc是利用index_col中的唯一标识来定位
+
+iloc定位
+-------------- 
+>>> type(df.iloc[0]) 
+    <class 'pandas.core.series.Series'> 
+// 取一行数据时候，默认返回序列
+>>> df.iloc[0]   //参数:int, 对应行的index
+a    1
+b    2
+c    3
+d    4
+
+>>> df.iloc[[0, 1]]  //参数：list 返回0行和1行
+     a    b    c    d
+0    1    2    3    4
+1  100  200  300  400
+
+
+>>> df.iloc[:3]  //参数使用切片，返回0-3行
+      a     b     c     d
+0     1     2     3     4
+1   100   200   300   400
+2  1000  2000  3000  4000
+
+>>> df.iloc[[True, False, True]] //用bool值来标识row，为true的输出
+      a     b     c     d
+0     1     2     3     4
+2  1000  2000  3000  4000
+
+>>> df.iloc[lambda x: x.index % 2 == 0] //lambda来表示行
+      a     b     c     d
+0     1     2     3     4
+2  1000  2000  3000  4000
+ >>> df.iloc[0, 1] //用坐标来取数
+        2
+
+>>> df.iloc[[0, 2], [1, 3]] //参数为二维数组，第一个传入row,第二个传入col
+      b     d
+0     2     4
+2  2000  4000
+
+
+>>> df.iloc[1:3, 0:3]  //参数传入两个切片
+      a     b     c
+1   100   200   300
+2  1000  2000  3000
+
+
+>>> df.iloc[:, [True, False, True, False]] //传入bolean
+      a     c
+0     1     3
+1   100   300
+2  1000  3000
+
+
+>>> df.iloc[:, lambda df: [0, 2]]
+      a     c
+0     1     3
+1   100   300
+2  1000  3000
 
 
 
@@ -2480,6 +2587,38 @@ pytest setup teardown
 ----------------------
 # https://blog.csdn.net/anndy_/article/details/119885380
 # https://blog.csdn.net/anndy_/article/details/119865739
+
+
+pytest.ini
+----------------
+[pytest]
+
+minversion = 5.0
+
+markers =
+    slow: marks tests as slow (deselect with '-m "not slow"', or, not, and expression supported)
+    smoke: Run the smoke test functions for tasks project
+    critical: mark cases as critical
+    failed: mark cases failed
+    success: mark cases success
+    serial
+    uat: uat cases
+    system: system test cases
+
+
+addopts = -vv --strict-markers -s
+testpaths = ./python
+python_files = test*.py
+python_classes = Test*
+python_functions = test*
+
+log_cli = 1
+log_cli_level = INFO
+
+filterwarnings =
+    ignore::urllib3.exceptions.InsecureRequestWarning
+    ignore::DeprecationWarning
+    
 
 
 正则表达式.*?
