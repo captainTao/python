@@ -85,32 +85,40 @@ class ExcelHandler:
     def read_excel_line(self, loc: str = None, **kwargs):
         """利用pandas来读取excel,返回也是字典列表"""
         excel_content = pd.read_excel(self.filename, index_col='case_id', engine='openpyxl', **kwargs)
-        log.info(f'excel shape: {excel_content.shape}')
+        excel_content.insert(0, 'case_id', excel_content.index)
         headers = excel_content.columns.values
-        log.info(f'excel headers: {headers}')
+        log.info(f'excel shape: {excel_content.shape}')
+        log.debug(f'excel headers: {headers.tolist()}')
+        log.debug(f'excel index: {excel_content.index.tolist()}')
         if loc is not None:
-            vls = excel_content.loc[loc].values
-            for index in range(len(vls)):
-                if index > 0 and type(vls[index]) == str:
-                    vls[index] = ast.literal_eval(vls[index])
-                if pd.isna(vls[index]):
-                    vls[index] = None
-            return [dict(zip(headers, vls))]
+            vls = excel_content.loc[loc]
+            if isinstance(vls, pd.Series):
+                vls = vls.values
+                for index in range(len(vls)):
+                    if index > 1 and type(vls[index]) == str:
+                        vls[index] = ast.literal_eval(vls[index])
+                    if pd.isna(vls[index]):
+                        vls[index] = None
+                return [dict(zip(headers, vls))]
         else:
-            vls = excel_content.values
-            for row in vls:
-                for index in range(len(row)):
-                    log.info(f'row[index]={row[index]}')
-                    if index > 0 and type(row[index]) == str:
-                        row[index] = ast.literal_eval(row[index])
-                    if pd.isna(row[index]):
-                        row[index] = None
-        return [dict(zip(headers, row_data)) for row_data in vls]
+            vls = excel_content
+        vls_new = []
+        for row_id, row in vls.iterrows():
+            row = row.tolist()
+            for index in range(len(row)):
+                if index > 1 and type(row[index]) == str:
+                    row[index] = ast.literal_eval(row[index])
+                if pd.isna(row[index]):
+                    row[index] = None
+            vls_new.append(row)
+        return [dict(zip(headers, row_data)) for row_data in vls_new]
 
 
 if __name__ == '__main__':
+    '''
     result1 = ExcelHandler('store').read_excel_list()
     print(result1)
-    result2 = ExcelHandler('store').read_excel_line('life_store_02')
+    '''
+    result2 = ExcelHandler('store').read_excel_line('life_store_04')
     print(result2)
 

@@ -1786,6 +1786,81 @@ print(min(dt['dates']))
 
 pandas
 --------------
+pandas基础操作
+-------------
+https://blog.csdn.net/xtfge0915/article/details/52938740
+
+
+pandas设置索引
+---------------
+# https://blog.csdn.net/xtfge0915/article/details/52938740
+# set_index、reset_index、reindex。
+
+# set _index用于将df中的一行或多行设置为索引。
+# 参数drop默认为True，意为将该列设置为索引后从数据中删除，如果设为False，将继续在数据中保留该行。
+
+df.set_index(['one'],drop=False) 
+df.set_index('one')
+df.set_index(['one','two'])
+
+
+pandas遍历
+---------------
+<class 'pandas.core.frame.DataFrame'>
+<class 'pandas.core.series.Series'>
+
+import pandas as pd
+isinstance(vls, pd.Series) // 判断类型为series,只有一条数据
+isinstance(vls, pd.DataFrame) // 判断类型为dataframe,大于一条数据
+
+# https://blog.csdn.net/sinat_29675423/article/details/87972498
+iterrows(): 按行遍历，将DataFrame的每一行迭代为(index, Series)对，可以通过row[name]对元素进行访问。
+itertuples(): 按行遍历，将DataFrame的每一行迭代为元祖，可以通过row[name]对元素进行访问，比iterrows()效率高。
+iteritems():按列遍历，将DataFrame的每一列迭代为(列名, Series)对，可以通过row[index]对元素进行访问。
+
+import pandas as pd
+
+inp = [{'c1':10, 'c2':100}, {'c1':11, 'c2':110}, {'c1':12, 'c2':123}]
+df = pd.DataFrame(inp)
+print(df)
+
+
+for index, row in df.iterrows():
+    print(index) # 输出每行的索引值
+
+# 对于每一行，通过列名name访问对应的元素
+for row in df.iterrows():
+    print(row['c1'], row['c2']) # 输出每一行
+
+for row in df.itertuples():
+    print(getattr(row, 'c1'), getattr(row, 'c2')) # 输出每一行
+
+for index, row in df.iteritems():
+    print(index) # 输出列名
+
+for row in df.iteritems():
+    print(row[0], row[1], row[2]) # 输出各列
+
+
+pd.Series遍历：
+----------------
+import pandas as pd
+
+test = pd.Series([1,2,3,4,5])
+for i,v in test.items():
+    print(i, v)
+# 0 a
+# 1 b
+# 2 c
+# 3 d
+
+for i, v in test.iteritems():
+    print('index: ', i, 'value: ', v)
+#index:  0 value:  a
+#index:  1 value:  b
+#index:  2 value:  c
+#index:  3 value:  d
+
 
 
 pandas判断值是否是nan:
@@ -1812,7 +1887,8 @@ any([na]) # True
 all([na]) #True
 
 
-
+DataFrame
+---------
 mydict = [{'a': 1, 'b': 2, 'c': 3, 'd': 4},
           {'a': 100, 'b': 200, 'c': 300, 'd': 400},
           {'a': 1000, 'b': 2000, 'c': 3000, 'd': 4000}]
@@ -1827,7 +1903,7 @@ print(df)
 
 loc,和iloc使用的方法一样，loc是利用index_col中的唯一标识来定位
 
-iloc定位
+pandas iloc定位
 -------------- 
 >>> type(df.iloc[0]) 
     <class 'pandas.core.series.Series'> 
@@ -2578,6 +2654,7 @@ try:
 except Exception as e:
     log.info(f"error")
 else:
+    #没有异常执行这儿
     print(....)
 finally:
     .......
