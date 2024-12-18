@@ -111,6 +111,10 @@ re_json = response.json()
 response.json()返回的类型为dict
 response.text 返回的类型为string
 
+response = requests.get(url=base_url, headers=headers, params=params)
+print(response.json())
+
+
 7个主要方法：
 requests.request()  构造一个请求，支持以下各种方法
 requests.get()  获取html的主要方法
@@ -183,6 +187,13 @@ params: 翻译过来就是参数， url中的额外参数，字典或者字节�
 
 例如：kv = {'key1':' values', 'key2': 'values'}
 r = requests.get('http:www.python123.io/ws', params=kw)
+
+或者使用：
+
+from urllib.parse import urlencode, quote_plus
+encoded_params = urlencode(params, doseq=True)
+get_url = f'{base_url}?{encoded_params}'
+
 
 2. data：字典，字节序或文件对象，重点作为向服务器提供或提交资源是提交，，作为request的内容，与params不同的是，data提交的数据并不放在url链接里， 而是放在url链接对应位置的地方作为数据来存储。，它也可以接受一个字符串对象。
 
@@ -2716,3 +2727,27 @@ filterwarnings =
 原文链接：https://blog.csdn.net/huang__2/article/details/103781716
 
 '''
+
+
+随机生成word:
+--------------------------------------
+随机生产word
+from wonderwords import RandomWord
+
+r = RandomWord()
+random_word = r.word()
+print(random_word)
+
+
+# 随机生成字符串
+from RandomWordGenerator import RandomWord
+
+rw = RandomWord(max_word_size=5)
+random_word = rw.generate()
+print(random_word)
+
+
+
+Installation:
+wonderwords: pip install wonderwords
+Random-Word-Generator: pip install Random-Word-Generator
