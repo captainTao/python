@@ -8,10 +8,42 @@ pytest
 pytest -v
 pytest --markers 查看标记
 
+安装：
+pip install -U pytest
+
+Pytest用例设计原则：
+-----------------
+测试类以Test开头，并且不能带有init方法
+以test 开头的函数
+以Test开头的类
+所有的包pakege必须要有 init .py文件
+断言使用assert
+
+
+
+"""
+pytest命名规则：
+    测试文件必须以：
+        test_*.py开头
+        *_test.py结尾
+    测试类以及方法命名规则：
+        Test*类包含所有的test_*的方法（注意不能有__init__方法）
+        否则pytest会认为这不是一个测试用例而是一个有特殊功能的类
+        或者不在class中的test_*的方法
+"""
+
+
+运行：
+pycharm运行：
+pytest.main(["test.py"])
+
+命令行运行：
+pytest test.py
+#运行指定类下的指定方法
+pytest 文件名::类名::方法名
 
 
 1.打印输出 -s
-
 
 
 2.@pytest.fixture()
@@ -168,3 +200,11 @@ Allure用例描述
 14.参数化读取yaml
 
 
+
+15.生成allure报告：
+
+安装模块:pip install allure-pytest
+#第一步:生成xml数据
+pytest--alluredir=./report/xml testcase.py
+#第二步:生成html文件
+allure generate--clean ./report/xml -o ./result/html

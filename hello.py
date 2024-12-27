@@ -2452,6 +2452,28 @@ yaml
 pip install pyyaml
 
 
+import yaml
+import os
+
+file_path = os.path.split(os.path.realpath(__file__))[0]
+root_path = os.path.split(file_path)[0]
+
+
+class YamlUtil:
+    @staticmethod
+    def read_yaml(yaml_file, part=None, sub_folder='testdata'):
+        with open(os.path.join(root_path, sub_folder, yaml_file), encoding="utf-8")as f:
+            value = yaml.load(f, Loader=yaml.FullLoader)
+            if part is not None:
+                return value[part]
+            return value
+
+
+if __name__ == '__main__':
+    print(YamlUtil.read_yaml("biology_identification.yml", "bind"))
+
+
+
 ddt
 ------------
 pip install ddt
