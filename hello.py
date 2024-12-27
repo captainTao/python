@@ -2773,3 +2773,24 @@ print(random_word)
 Installation:
 wonderwords: pip install wonderwords
 Random-Word-Generator: pip install Random-Word-Generator
+
+
+
+
+# 返回md5小写
+import hashlib
+def md5_32_lower(text):
+    md5 = hashlib.md5()  # 创建一个md5对象
+    md5.update(text.encode('utf-8'))  # 使用utf-8编码
+    return md5.hexdigest().lower()  # 返回小写的32位MD5值
+
+
+# 返回时间戳
+def get_timestamp():
+    return str(int(datetime.datetime.now().timestamp()))
+
+
+# 返回20位随机数,不够补起20位
+def get_random_number():
+    random_number = random.randint(10 ** 19, 10 ** 20 - 1)
+    return str(random_number).zfill(20)
